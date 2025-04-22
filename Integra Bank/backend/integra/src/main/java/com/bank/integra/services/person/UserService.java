@@ -1,5 +1,6 @@
 package com.bank.integra.services.person;
 
+import com.bank.integra.dao.RolesRepository;
 import com.bank.integra.dao.UserDetailsRepository;
 import com.bank.integra.dao.UserRepository;
 import com.bank.integra.entities.details.UserDetails;
@@ -22,6 +23,9 @@ public class UserService {
 
     @Autowired
     private UserDetailsRepository userDetailsRepository;
+
+    @Autowired
+    private RolesRepository rolesRepository;
 
     @Transactional
     public User createUser(User user, UserDetails userDetails) {
