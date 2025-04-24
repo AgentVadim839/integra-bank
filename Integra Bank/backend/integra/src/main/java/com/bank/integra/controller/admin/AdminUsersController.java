@@ -1,12 +1,18 @@
 package com.bank.integra.controller.admin;
 
+import com.bank.integra.dao.UserDetailsRepository;
+import com.bank.integra.entities.details.UserDetails;
 import com.bank.integra.entities.person.AbstractPerson;
 import com.bank.integra.entities.person.User;
+import com.bank.integra.services.adminDTO.AdminDTO;
 import com.bank.integra.services.person.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -16,6 +22,9 @@ public class AdminUsersController {
     //TODO Слегка рыгань
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserDetailsRepository userDetailsRepository;
 
     @GetMapping("")
     public String showAllUsers(Model model) {
@@ -30,8 +39,9 @@ public class AdminUsersController {
         return "adminUsersList";
     }
 
+    // Aint no model attributes required, js already sends success message after deleting.
     @PostMapping("/delete/{id}")
-    public String deleteUser(@PathVariable int id, Model model) {
+    public String deleteUser(@PathVariable int id) {
         User user = userService.getUserById(id);
          if(user == null) {
              throw new RuntimeException("User " + id + " not found.");
@@ -39,5 +49,35 @@ public class AdminUsersController {
 
          userService.deleteUserById(id);
         return "redirect:/admin/users?deleted=true";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String editUser(@PathVariable int id, Model model) {
+        User user = userService.getUserById(id);
+        user.setUserDetails(userDetailsRepository.findUserDetailsByUserId(id));
+        model.addAttribute("editUser", user);
+        return "adminEditUser";
+    }
+
+    //TODO AdminDTO не создаётся! В него вводятся пустые данные, тк форма обрабатывает данные не для админдто, а для эдит юзер с другими полями.
+    @PostMapping("/update/{id}")
+    public String updateUser(@PathVariable Integer id, @ModelAttribute @Valid User adminDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if(bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("error", "Validation failed");
+            return "redirect:/admin/users";
+        }
+
+
+
+
+        User user = new User(id, "", true);
+        UserDetails userDetails = new UserDetails(id, adminDTO.getUserDetails().getBalance(), adminDTO.getUserDetails().getFirstName(), adminDTO.getUserDetails().getLastName(), "", adminDTO.getUserDetails().getEmail());
+        user.setUserDetails(userDetails);
+        if (user == null) {
+            throw new RuntimeException("User " + id + " not found.");
+        }
+        userService.updateUser(user);
+        redirectAttributes.addFlashAttribute("update", true);
+        return "redirect:/admin/users";
     }
 }

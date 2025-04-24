@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit User - Integra Bank</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-8">
+
+<div class="max-w-3xl mx-auto bg-white shadow-lg rounded-lg p-6">
+    <h2 class="text-3xl font-bold mb-6">Edit User</h2>
+
+    <form th:action="@{/admin/users/update/{id}(id=${editUser.id})}" method="POST" th:object="${editUser}" class="space-y-4">
+        <!-- скрытое поле для использования PUT -->
+        <input type="hidden" name="_method" value="put"/>
+
+        <div>
+            <label for="id" class="block text-gray-700 text-sm font-bold mb-2">ID</label>
+            <input type="text" id="id" th:field="*{id}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" readonly>
+        </div>
+
+        <div>
+            <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Password</label>
+            <input type="password" id="password" th:field="*{password}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+            <p class="text-gray-500 text-xs italic">Leave blank to keep the current password.</p>
+        </div>
+
+        <div th:object="${editUser.userDetails}">
+            <label for="firstName" class="block text-gray-700 text-sm font-bold mb-2">First Name</label>
+            <input type="text" id="firstName" th:field="*{firstName}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        </div>
+
+        <div th:object="${editUser.userDetails}">
+            <label for="lastName" class="block text-gray-700 text-sm font-bold mb-2">Last Name</label>
+            <input type="text" id="lastName" th:field="*{lastName}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        </div>
+
+        <div th:object="${editUser.userDetails}">
+            <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email</label>
+            <input type="email" id="email" th:field="*{email}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        </div>
+
+        <div class="flex items-center justify-between">
+            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                Save Changes
+            </button>
+            <a th:href="@{/admin/users}" class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
+                Cancel
+            </a>
+        </div>
+    </form>
+
+</div>
+
+</body>
+</html>
