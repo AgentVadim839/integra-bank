@@ -2,12 +2,12 @@ package com.bank.integra.controller.admin;
 
 import com.bank.integra.dao.UserDetailsRepository;
 import com.bank.integra.entities.details.UserDetails;
-import com.bank.integra.entities.person.AbstractPerson;
 import com.bank.integra.entities.person.User;
 import com.bank.integra.services.adminDTO.AdminDTO;
 import com.bank.integra.services.person.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,6 +25,9 @@ public class AdminUsersController {
 
     @Autowired
     private UserDetailsRepository userDetailsRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @GetMapping("")
     public String showAllUsers(Model model) {
@@ -54,24 +57,35 @@ public class AdminUsersController {
     @GetMapping("/edit/{id}")
     public String editUser(@PathVariable int id, Model model) {
         User user = userService.getUserById(id);
-        user.setUserDetails(userDetailsRepository.findUserDetailsByUserId(id));
-        model.addAttribute("editUser", user);
+        if(user == null) {
+            return "redirect:/admin/users";
+        }
+
+        AdminDTO adminDTO = new AdminDTO();
+        adminDTO.setUserId(user.getId());
+        adminDTO.setFirstName(user.getUserDetails().getFirstName());
+        adminDTO.setLastName(user.getUserDetails().getLastName());
+        adminDTO.setEmail(user.getUserDetails().getEmail());
+        model.addAttribute("editUser", adminDTO);
         return "adminEditUser";
     }
 
     //TODO AdminDTO не создаётся! В него вводятся пустые данные, тк форма обрабатывает данные не для админдто, а для эдит юзер с другими полями.
     @PostMapping("/update/{id}")
-    public String updateUser(@PathVariable Integer id, @ModelAttribute @Valid User adminDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public String updateUser(@PathVariable Integer id, @ModelAttribute @Valid AdminDTO adminDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         if(bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("error", "Validation failed");
             return "redirect:/admin/users";
         }
 
-
-
-
-        User user = new User(id, "", true);
-        UserDetails userDetails = new UserDetails(id, adminDTO.getUserDetails().getBalance(), adminDTO.getUserDetails().getFirstName(), adminDTO.getUserDetails().getLastName(), "", adminDTO.getUserDetails().getEmail());
+        User user = userService.getUserById(adminDTO.getUserId());
+        if(adminDTO.getPassword() != null) {
+            user.setPassword(passwordEncoder.encode(adminDTO.getPassword()));
+        }
+        UserDetails userDetails = userDetailsRepository.findUserDetailsByUserId(adminDTO.getUserId());
+        userDetails.setFirstName(adminDTO.getFirstName());
+        userDetails.setLastName(adminDTO.getLastName());
+        userDetails.setEmail(adminDTO.getEmail());
         user.setUserDetails(userDetails);
         if (user == null) {
             throw new RuntimeException("User " + id + " not found.");

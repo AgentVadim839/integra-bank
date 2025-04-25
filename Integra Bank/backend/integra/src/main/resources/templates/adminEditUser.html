@@ -10,36 +10,46 @@
 <div class="max-w-3xl mx-auto bg-white shadow-lg rounded-lg p-6">
     <h2 class="text-3xl font-bold mb-6">Edit User</h2>
 
-    <form th:action="@{/admin/users/update/{id}(id=${editUser.id})}" method="POST" th:object="${editUser}" class="space-y-4">
-        <!-- скрытое поле для использования PUT -->
-        <input type="hidden" name="_method" value="put"/>
+    <form th:action="@{/admin/users/update/{id}(id=${editUser.userId})}" method="post" th:object="${editUser}" class="space-y-6">
 
+        <!-- ID -->
         <div>
-            <label for="id" class="block text-gray-700 text-sm font-bold mb-2">ID</label>
-            <input type="text" id="id" th:field="*{id}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" readonly>
+            <label for="userId" class="block text-gray-700 text-sm font-bold mb-2">ID</label>
+            <input type="text" id="userId" th:field="*{userId}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" readonly>
         </div>
 
+        <!-- Password -->
         <div>
             <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Password</label>
-            <input type="password" id="password" th:field="*{password}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+            <input type="password" id="password" th:field="*{password}" placeholder="Enter new password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
             <p class="text-gray-500 text-xs italic">Leave blank to keep the current password.</p>
         </div>
 
-        <div th:object="${editUser.userDetails}">
+        <!-- First Name -->
+        <div>
             <label for="firstName" class="block text-gray-700 text-sm font-bold mb-2">First Name</label>
-            <input type="text" id="firstName" th:field="*{firstName}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+            <input type="text" id="firstName" th:field="*{firstName}" placeholder="First name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
         </div>
 
-        <div th:object="${editUser.userDetails}">
+        <!-- Last Name -->
+        <div>
             <label for="lastName" class="block text-gray-700 text-sm font-bold mb-2">Last Name</label>
-            <input type="text" id="lastName" th:field="*{lastName}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+            <input type="text" id="lastName" th:field="*{lastName}" placeholder="Last name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
         </div>
 
-        <div th:object="${editUser.userDetails}">
+        <!-- Email -->
+        <div>
             <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email</label>
-            <input type="email" id="email" th:field="*{email}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+            <input type="email" id="email" th:field="*{email}" placeholder="Email address" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
         </div>
 
+        <!-- Balance -->
+        <div>
+            <label for="balance" class="block text-gray-700 text-sm font-bold mb-2">Balance</label>
+            <input type="number" step="0.01" id="balance" th:field="*{balance}" placeholder="Account balance" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        </div>
+
+        <!-- Buttons -->
         <div class="flex items-center justify-between">
             <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                 Save Changes
@@ -49,7 +59,6 @@
             </a>
         </div>
     </form>
-
 </div>
 
 </body>
