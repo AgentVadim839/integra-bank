@@ -8,14 +8,31 @@
  <script src="https://cdn.tailwindcss.com"></script>
  <link href="https://fonts.googleapis.com/css2?family=Inknut+Antiqua:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
- <link th:href="@{/styles/bank/dash/style.css}" rel="stylesheet" />
+ <link href="/styles/bank/dash/style.css" rel="stylesheet" />
+ <style>
+  .dashboard-card {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+  }
+
+  .transaction-item {
+      padding: 10px 0;
+      border-bottom: 1px solid #e2e8f0;
+  }
+
+  .transaction-item:last-child {
+      border-bottom: none;
+  }
+ </style>
 </head>
 <body class="bg-gray-200 min-h-screen flex">
-<!-- Sidebar -->
 <div class="sidebar">
  <div class="p-2 flex flex-col items-center">
   <div class="logo-fancy">
-   <img alt="Bank logo placeholder" class="side-content" height="100" th:src="@{/styles/logo/logo1.png}" width="100"/>
+   <img alt="Bank logo placeholder" class="side-content" height="100" src="/styles/logo/logo1.png" width="100"/>
    <h1 class="text-2xl text-center" style="font-family: 'Inknut Antiqua', serif;">Integra</h1>
    <div class="separator"></div>
   </div>
@@ -32,33 +49,37 @@
 
  </nav>
 </div>
-<!-- Main Content -->
-<div class="main-content">
+<div class="main-content p-8">
  <h2 class="text-3xl font-bold mb-6">Welcome, <span th:text="${user.firstName}"></span>!</h2>
- <div class="grid-container">
-  <div class="card">
-   <h3>Account Overview</h3>
-   <p>View your account balances and recent transactions.</p>
+ <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+  <div class="dashboard-card">
+   <h3 class="text-xl font-semibold mb-2">Your Balance</h3>
+   <p class="text-2xl font-bold text-green-500"><span th:text="${balance}"></span></p>
   </div>
-  <div class="card">
-   <h3>Make a Payment</h3>
-   <p>Pay your bills and transfer money easily.</p>
+
+  <div class="dashboard-card">
+   <h3 class="text-xl font-semibold mb-2">Recent Transactions</h3>
+   <ul>
+    <li class="transaction-item">
+     <span>3 Gorillas casino</span>
+     <span>YOU WON ZAZILLION DOLLAS!!</span>
+     <span class="float-right">$1,000,000,000,000</span>
+    </li>
+    <li class="transaction-item">
+     <span>Transfer from Friend Y</span>
+     <span class="float-right">₴120.00</span>
+    </li>
+    <li class="transaction-item">
+     <span>Mobile Top-up</span>
+     <span class="float-right">₴20.00</span>
+    </li>
+   </ul>
+   <a href="/user/transactions" class="block mt-4 text-sm text-blue-500 hover:underline">View All Transactions</a>
   </div>
-  <div class="card">
-   <h3>Transaction History</h3>
-   <p>Review your past transactions and statements.</p>
-  </div>
-  <div class="card">
-   <h3>Settings</h3>
-   <p>Manage your account settings and preferences.</p>
-  </div>
-  <div class="card">
-   <h3>Support</h3>
-   <p>Get help and support for your banking needs.</p>
-  </div>
-  <div class="card">
-   <h3>Logout</h3>
-   <p>Securely log out of your account.</p>
+
+  <div class="dashboard-card">
+   <h3 class="text-xl font-semibold mb-2">USD/UAH Exchange Rate</h3>
+   <p class="text-2xl font-bold text-blue-500"><strong th:text="${usdToUah.buy}"></strong>/<strong th:text="${usdToUah.sale}"></strong></p>
   </div>
  </div>
 </div>

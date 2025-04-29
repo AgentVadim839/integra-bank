@@ -14,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Controller
@@ -78,11 +79,15 @@ public class AdminUsersController {
             return "redirect:/admin/users";
         }
 
+        System.out.println("oleg:" + adminDTO.getPassword() + "|");
         User user = userService.getUserById(adminDTO.getUserId());
-        if(adminDTO.getPassword() != null) {
+        if(!adminDTO.getPassword().isBlank()) {
             user.setPassword(passwordEncoder.encode(adminDTO.getPassword()));
         }
         UserDetails userDetails = userDetailsRepository.findUserDetailsByUserId(adminDTO.getUserId());
+        if(adminDTO.getBalance() != null) {
+            userDetails.setBalance(adminDTO.getBalance());
+        }
         userDetails.setFirstName(adminDTO.getFirstName());
         userDetails.setLastName(adminDTO.getLastName());
         userDetails.setEmail(adminDTO.getEmail());
