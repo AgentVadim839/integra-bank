@@ -7,7 +7,7 @@ import com.bank.integra.dao.UserRepository;
 import com.bank.integra.entities.details.UserDetails;
 import com.bank.integra.entities.person.User;
 import com.bank.integra.entities.role.Role;
-import com.bank.integra.services.adminDTO.AdminDTO;
+import com.bank.integra.services.DTO.AdminDTO;
 import com.bank.integra.services.person.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.bank.integra.services.adminDTO;
+package com.bank.integra.services.DTO;
 
 import jakarta.validation.constraints.*;
 import lombok.Data;

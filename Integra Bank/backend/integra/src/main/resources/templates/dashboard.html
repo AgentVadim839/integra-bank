@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<html lang="en">
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
  <meta charset="utf-8"/>
@@ -80,6 +79,30 @@
   <div class="dashboard-card">
    <h3 class="text-xl font-semibold mb-2">USD/UAH Exchange Rate</h3>
    <p class="text-2xl font-bold text-blue-500"><strong th:text="${usdToUah.buy}"></strong>/<strong th:text="${usdToUah.sale}"></strong></p>
+  </div>
+
+  <div class="dashboard-card">
+   <h3 class="text-xl font-semibold mb-2">Transfer Money</h3>
+   <form th:action="@{/user/transfer}" method="post" class="flex flex-col space-y-3">
+    <input type="hidden" name="senderId" th:value="${user.userId}"/>
+    <div>
+     <label for="recipientId" class="block text-gray-700 text-sm font-bold mb-2">Recipient ID:</label>
+     <input type="text" id="recipientId" name="recipientId" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Enter recipient ID">
+    </div>
+    <div>
+     <label for="amount" class="block text-gray-700 text-sm font-bold mb-2">Amount:</label>
+     <input type="number" id="amount" name="amount" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Enter amount">
+    </div>
+    <button
+            class="w-full py-2 text-white font-semibold rounded shadow-md transition-colors duration-200"
+            style="background-color: #7B9A6D;"
+            onmouseover="this.style.backgroundColor='#6C895F';"
+            onmouseout="this.style.backgroundColor='#7B9A6D';"
+            type="submit"
+    >
+     Send
+    </button>
+   </form>
   </div>
  </div>
 </div>

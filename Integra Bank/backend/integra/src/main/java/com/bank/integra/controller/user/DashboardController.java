@@ -21,6 +21,7 @@ public class DashboardController {
     @Autowired
     CurrencyService currencyService;
 
+    //TODO Сделать нормальную историю транзакций между пользователями, списком.
     @GetMapping("/home")
     public String showMainPage(Authentication authentication, Model model) {
         Integer userId = Integer.parseInt(authentication.getName());

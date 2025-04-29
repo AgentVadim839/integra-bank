@@ -3,7 +3,7 @@ package com.bank.integra.controller.admin;
 import com.bank.integra.dao.UserDetailsRepository;
 import com.bank.integra.entities.details.UserDetails;
 import com.bank.integra.entities.person.User;
-import com.bank.integra.services.adminDTO.AdminDTO;
+import com.bank.integra.services.DTO.AdminDTO;
 import com.bank.integra.services.person.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Controller
