@@ -30,8 +30,10 @@ public class DashboardController {
         //For fun
         String displayedUserBalance;
         double userBalance = userDetails.getBalance();
-        if(userBalance >= 1_000_000_000_000_000.0) {
-            displayedUserBalance = "ZAZILLION DOLLAS 🤑🤑";
+        double zazillion = 1_000_000_000_000_000.0;
+        if(userBalance >= zazillion) {
+            String numZaz = userBalance + "";
+            displayedUserBalance = numZaz.charAt(0) + " ZAZILLION DOLLAS 🤑🤑";
         } else {
             displayedUserBalance = String.format("$%,.2f", userBalance);
         }

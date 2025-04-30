@@ -7,6 +7,7 @@ import com.bank.integra.entities.person.User;
 import com.bank.integra.services.person.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 
 //TODO Эта херня должна ещё генерировать транзекшн хистори и квитанцию пдф и валидации нада дахуа
@@ -20,11 +21,17 @@ public class PaymentService {
 
     public PaymentService() {}
 
+    @Transactional
     public void makePayment(Integer payerPersonId, Integer receiverPersonId, Double amount, Model model) {
+        if (receiverPersonId == payerPersonId || userService.getUserDetailsByUserId(receiverPersonId) == null || userService.getUserDetailsByUserId(payerPersonId) == null) {
+            model.addAttribute("paymentErrorInvalidPayerId", "The user id is invalid. Please, try again.");
+            return;
+        }
         UserDetails payerUserDetails = userService.getUserDetailsByUserId(payerPersonId);
         UserDetails receiverUserDetails = userService.getUserDetailsByUserId(receiverPersonId);
         if (payerUserDetails.getBalance() < amount) {
-            model.addAttribute("paymentError", "Not enough funds for transfer operation.");
+            model.addAttribute("paymentErrorNotEnoughFunds", "Not enough funds for transfer operation.");
+            return;
         }
         payerUserDetails.setBalance(payerUserDetails.getBalance() - amount);
         receiverUserDetails.setBalance(receiverUserDetails.getBalance() + amount);
