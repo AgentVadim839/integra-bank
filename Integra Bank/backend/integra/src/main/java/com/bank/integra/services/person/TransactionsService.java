@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,6 +25,22 @@ public class TransactionsService {
     @Autowired
     private UserService userService;
 
+    // TODO Говно чисть, которое ты кодом назвал (хотя оно работает):
+    // [🔥 срочно починить откаты транзакции, когда sender или recipient не найдены]:
+    // В методе saveTransaction() кидаются RuntimeException'ы, если не найден sender или recipient.
+    // Эти исключения внутри транзакции помечают её как rollback-only, и даже если ты их отловишь,
+    // Spring всё равно откатит БД. В итоге в контроллере будет UnexpectedRollbackException,
+    // и ты такой сидишь и не понимаешь, в чём дело 🤯
+    //
+    // 👉 Нужно:
+    // 1. Вместо .orElseThrow(() -> new RuntimeException(...)) — использовать orElse(null)
+    // 2. Потом вручную проверить на null и выбросить IllegalArgumentException или вернуть null.
+    //    Это НЕ приведёт к автоматическому rollback'у, и контроллер сможет обработать ошибку.
+    // 3. Контроллер должен отловить эту ошибку и не пугаться, что транзакция вон уже вся откатилась.
+    //
+    // 🎯 Цель: чтобы метод createAndSave() не взрывал транзакцию по пустякам.
+    // 🧠 Подумать: может, вообще делать проверку на существование пользователей ДО входа в @Transactional?
+
 
     public Transaction saveTransaction(Transaction transaction) {
         UserDetails sender = userDetailsRepository.findById(transaction.getSender().getUserId())
@@ -34,18 +51,19 @@ public class TransactionsService {
         return transactionRepository.save(transaction);
     }
 
-    public Transaction createTransaction(Integer senderId, Integer recipientId, Double balance, String description) {
+    public Transaction createTransaction(Integer senderId, Integer recipientId, Double balance, String description, UUID idempotencyKey) {
         Transaction transaction = new Transaction();
         transaction.setSender(userService.getUserDetailsByUserId(senderId));
         transaction.setRecipient(userService.getUserDetailsByUserId(recipientId));
         transaction.setBalance(balance);
         transaction.setEventTimeStamp(LocalDateTime.now());
         transaction.setDescription(description);
+        transaction.setIdempotencyKey(idempotencyKey.toString());
         return transaction;
     }
 
-    public Transaction createAndSave(Integer senderId, Integer recipientId, Double balance, String description) {
-        Transaction transaction = createTransaction(senderId, recipientId, balance, description);
+    public Transaction createAndSave(Integer senderId, Integer recipientId, Double balance, String description, UUID idempotencyKey) {
+        Transaction transaction = createTransaction(senderId, recipientId, balance, description, idempotencyKey);
         return saveTransaction(transaction);
     }
 
