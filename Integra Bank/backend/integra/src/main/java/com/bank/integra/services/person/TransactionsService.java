@@ -43,10 +43,8 @@ public class TransactionsService {
 
 
     public Transaction saveTransaction(Transaction transaction) {
-        UserDetails sender = userDetailsRepository.findById(transaction.getSender().getUserId())
-                .orElseThrow(() -> new RuntimeException("Sender not found"));
-        UserDetails recipient = userDetailsRepository.findById(transaction.getRecipient().getUserId())
-                .orElseThrow(() -> new RuntimeException("Recipient not found"));
+        UserDetails sender = userDetailsRepository.findById(transaction.getSender().getUserId()).orElse(null);
+        UserDetails recipient = userDetailsRepository.findById(transaction.getRecipient().getUserId()).orElse(null);
 
         return transactionRepository.save(transaction);
     }

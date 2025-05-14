@@ -51,11 +51,8 @@ public class PaymentService {
             receiverUserDetails.setBalance(receiverUserDetails.getBalance() + amount);
             userDetailsRepository.save(payerUserDetails);
             userDetailsRepository.save(receiverUserDetails);
-
-            try {
-                transactionsService.createAndSave(payerPersonId, receiverPersonId, amount, "", idempotencyKey);
-            } catch(DataIntegrityViolationException e) {
-                System.out.println("ультра вомп вомп, мы уже внатури сохраняли.");
+            if(transactionsService.createAndSave(payerPersonId, receiverPersonId, amount, "", idempotencyKey) == null) {
+                throw new IllegalArgumentException();
             }
         } else {
             System.out.println("womp womp");

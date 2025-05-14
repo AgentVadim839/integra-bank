@@ -5,11 +5,13 @@ import com.bank.integra.services.bank.PaymentService;
 import com.bank.integra.services.person.TransactionsService;
 import com.bank.integra.services.person.UserService;
 import jakarta.annotation.PostConstruct;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.UUID;
 
 @RequestMapping("/user")
@@ -35,6 +37,7 @@ public class TransferController {
                     userService.getUserDetailsByUserId(recipientId).getLastName());
 
         model.addAttribute("transferData", transferDTO);
+        model.addAttribute("transactionOn", "true");
         return "confirmPayment";
     }
 
@@ -44,7 +47,11 @@ public class TransferController {
                                   @RequestParam Integer recipientId,
                                   @RequestParam Double amount,
                                   @RequestParam UUID idempotencyKey, Model model) {
-        paymentService.makePayment(senderId, recipientId, amount, idempotencyKey, model);
+        try {
+            paymentService.makePayment(senderId, recipientId, amount, idempotencyKey, model);
+        } catch(RuntimeException e) {
+            System.out.println("Duplicate of transaction.");
+        }
         return "redirect:/user/home?transactionSuccess=true";
     }
 }
