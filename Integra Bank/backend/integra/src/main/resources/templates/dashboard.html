@@ -59,22 +59,22 @@
   <div class="dashboard-card">
    <h3 class="text-xl font-semibold mb-2">Recent Transactions</h3>
    <ul>
-    <li class="transaction-item">
-     <span>3 Gorillas casino</span>
-     <span>YOU WON ZAZILLION DOLLAS!!</span>
-     <span class="float-right">$1,000,000,000,000</span>
-    </li>
-    <li class="transaction-item">
-     <span>Transfer from Friend Y</span>
-     <span class="float-right">₴120.00</span>
-    </li>
-    <li class="transaction-item">
-     <span>Mobile Top-up</span>
-     <span class="float-right">₴20.00</span>
+    <li class="transaction-item" th:each="t : ${transactions}">
+     <div class="flex justify-between items-center">
+      <div>
+       <p class="font-medium" th:text="${t.type} + ' → ' + ${t.to}"></p>
+       <p class="text-sm text-gray-600" th:text="${t.description}"></p>
+       <p class="text-xs text-gray-400" th:text="${#temporals.format(t.timestamp, 'dd MMM yyyy HH:mm')}"></p>
+      </div>
+      <div>
+       <p class="text-right font-bold" th:text="${t.amount + ' ₴'}"></p>
+      </div>
+     </div>
     </li>
    </ul>
    <a href="/user/transactions" class="block mt-4 text-sm text-blue-500 hover:underline">View All Transactions</a>
   </div>
+
 
   <div class="dashboard-card">
    <h3 class="text-xl font-semibold mb-2">USD/UAH Exchange Rate</h3>

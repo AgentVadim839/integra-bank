@@ -49,17 +49,16 @@ public class TransactionsService {
         return transactionRepository.findBySender(userService.getUserDetailsByUserId(senderId));
     }
 
-    public List<Map<String, Object>> getFormattedTransactionsForUser(Integer userId) {
-        UserDetails user = userDetailsRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
+    private List<Transaction> prepareLists(Integer userId, UserDetails user) {
         List<Transaction> filtered = transactionRepository.findAll().stream()
                 .filter(t -> t.getSender().equals(user) || t.getRecipient().equals(user))
                 .sorted() // тут работает Comparable<Transaction>
                 .toList();
+        return filtered;
+    }
 
+    private List<Map<String, Object>> formatLists(List<Transaction> filtered, UserDetails user) {
         List<Map<String, Object>> result = new OlegList();
-
         for (Transaction t : filtered) {
             Map<String, Object> map = new HashMap<>();
             if (t.getSender().equals(user)) {
@@ -78,12 +77,22 @@ public class TransactionsService {
 
             result.add(map);
         }
+        return result;
+    }
 
+    public List<Map<String, Object>> getFormattedTransactionsForUser(Integer userId) {
+        UserDetails user = userDetailsRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        List<Transaction> filtered = prepareLists(userId, user);
+        List<Map<String, Object>> result = formatLists(filtered, user);
         return result;
     }
 
     public List<Map<String, Object>> getFormattedTransactionsForUserThreeRecent(Integer userId) {
-        List<Map<String, Object>> result = getFormattedTransactionsForUser(userId).subList(0,3);
+        UserDetails user = userDetailsRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        List<Transaction> filtered = prepareLists(userId, user).subList(0,3);
+        List<Map<String, Object>> result = formatLists(filtered, user);
         return result;
     }
 
