@@ -25,6 +25,10 @@
   .transaction-item:last-child {
       border-bottom: none;
   }
+
+  .transaction-amount {
+      margin-top: 20px; /* Increased margin for the transaction amount */
+  }
  </style>
 </head>
 <body class="bg-gray-200 min-h-screen flex">
@@ -45,36 +49,38 @@
   <a href="#" class="your-class" onclick="document.getElementById('logoutForm').submit();">Logout</a>
   <form id="logoutForm" th:action="@{/user/logout}" method="post" style="display: none;">
   </form>
-
  </nav>
 </div>
 <div class="main-content p-8">
  <h2 class="text-3xl font-bold mb-6">Welcome, <span th:text="${user.firstName}"></span>!</h2>
- <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-  <div class="dashboard-card">
-   <h3 class="text-xl font-semibold mb-2">Your Balance</h3>
-   <p class="text-2xl font-bold text-green-500"><span th:text="${balance}"></span></p>
-  </div>
 
-  <div class="dashboard-card bg-white rounded-lg shadow-md p-6">
+ <div class="dashboard-card mb-6">
+  <h3 class="text-xl font-semibold mb-2">Your Balance</h3>
+  <p class="text-2xl font-bold text-green-500"><span th:text="${balance}"></span></p>
+ </div>
+
+ <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+  <div class="dashboard-card bg-white rounded-lg shadow-md p-6 col-span-2">
    <h3 class="text-2xl font-bold text-gray-800 mb-4">Recent Transactions</h3>
    <ul>
     <li class="transaction-item mb-4 pb-4 border-b border-gray-200 last:border-b-0 last:mb-0 last:pb-0" th:each="t : ${transactions}">
      <div class="flex justify-between items-center">
       <div>
-       <p class="font-semibold text-gray-900" th:text="${t.from} + ' → ' + ${t.to} + ' ' + ${t.type}"></p>
+       <p class="font-semibold text-gray-900" th:text="'From: ' + ${t.from}"></p>
+       <p class="font-semibold text-gray-900" th:text="'To: ' + ${t.to}"></p>
        <p class="text-sm text-gray-600 mt-1" th:text="${t.description}"></p>
        <p class="text-xs text-gray-400 mt-1" th:text="${#temporals.format(t.timestamp, 'dd MMM. HH:mm')}"></p>
       </div>
       <div>
-       <p class="text-right font-extrabold text-lg text-green-600" th:text="${'$' + t.amount}"></p>
+       <p class="text-right font-extrabold text-lg transaction-amount"
+          th:class="${t.type == 'sent' ? 'text-red-600' : 'text-green-600'}"
+          th:text="${t.type == 'sent' ? '-' + '$' + t.amount : '+' + '$' + t.amount}"></p>
       </div>
      </div>
     </li>
    </ul>
    <a href="/user/transactions" class="block mt-6 text-base text-blue-600 hover:underline hover:text-blue-700 transition duration-300 ease-in-out">View All Transactions</a>
   </div>
-
 
   <div class="dashboard-card">
    <h3 class="text-xl font-semibold mb-2">USD/UAH Exchange Rate</h3>
@@ -87,7 +93,7 @@
     <input type="hidden" name="senderId" th:value="${user.userId}"/>
     <div>
      <label for="recipientId" class="block text-gray-700 text-sm font-bold mb-2">Recipient ID:</label>
-     <input type="text" id="recipientId" name="recipientId" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Enter recipient ID"  required>
+     <input type="text" id="recipientId" name="recipientId" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Enter recipient ID" required>
     </div>
     <div>
      <label for="amount" class="block text-gray-700 text-sm font-bold mb-2">Amount:</label>

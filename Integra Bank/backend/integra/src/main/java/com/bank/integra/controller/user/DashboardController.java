@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 import java.util.Map;
 
+//TODO Мобство во вью. Любые транзакции будто на получение и пишет + и зелёным, а не - и красным. Фронтендеры мобы
 @RequestMapping("/user")
 @Controller
 public class DashboardController {
