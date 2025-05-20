@@ -36,11 +36,8 @@ public class PaymentService {
 
     @Transactional
     public void makePayment(Integer payerPersonId, Integer receiverPersonId, Double amount, UUID idempotencyKey, Model model) {
+        if (userNull(payerPersonId, receiverPersonId, model)) return;
         if(!transactionsRepository.existsByIdempotencyKey(idempotencyKey.toString())) {
-            if (receiverPersonId == payerPersonId || userService.getUserDetailsByUserId(receiverPersonId) == null || userService.getUserDetailsByUserId(payerPersonId) == null) {
-                model.addAttribute("paymentErrorInvalidPayerId", "The user id is invalid. Please, try again.");
-                return;
-            }
             UserDetails payerUserDetails = userService.getUserDetailsByUserId(payerPersonId);
             UserDetails receiverUserDetails = userService.getUserDetailsByUserId(receiverPersonId);
             if (payerUserDetails.getBalance() < amount) {
@@ -57,5 +54,13 @@ public class PaymentService {
         } else {
             System.out.println("womp womp");
         }
+    }
+
+    private boolean userNull(Integer payerPersonId, Integer receiverPersonId, Model model) {
+        if (userService.getUserDetailsByUserId(receiverPersonId) == null || userService.getUserDetailsByUserId(payerPersonId) == null) {
+            model.addAttribute("paymentErrorInvalidPayerId", "The user id is invalid. Please, try again.");
+            return true;
+        }
+        return false;
     }
 }

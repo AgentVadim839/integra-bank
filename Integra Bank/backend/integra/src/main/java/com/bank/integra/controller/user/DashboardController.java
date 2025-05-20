@@ -2,6 +2,7 @@ package com.bank.integra.controller.user;
 
 import com.bank.integra.entities.details.UserDetails;
 import com.bank.integra.services.API.CurrencyService;
+import com.bank.integra.services.person.TransactionsService;
 import com.bank.integra.services.person.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -10,21 +11,27 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.List;
 import java.util.Map;
 
 @RequestMapping("/user")
 @Controller
 public class DashboardController {
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @Autowired
-    CurrencyService currencyService;
+    private TransactionsService transactionsService;
+
+    @Autowired
+    private CurrencyService currencyService;
 
     @GetMapping("/home")
     public String showMainPage(Authentication authentication, Model model) {
         Integer userId = Integer.parseInt(authentication.getName());
         UserDetails userDetails = userService.getUserDetailsByUserId(userId);
+
+        List<Map<String, Object>> threeRecentTransactions = transactionsService.getFormattedTransactionsForUserThreeRecent(userId);
 
         //For fun
         String displayedUserBalance;
@@ -43,6 +50,7 @@ public class DashboardController {
         model.addAttribute("user", userDetails);
         model.addAttribute("balance", displayedUserBalance);
         model.addAttribute("usdToUah", usdRate.get("USD"));
+        model.addAttribute("transactions", threeRecentTransactions);
         return "dashboard";
     }
 

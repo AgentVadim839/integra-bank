@@ -5,12 +5,13 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.UUID;
 
 @Entity
 @Table(name = "transactions")
 @Data
-public class Transaction {
+public class Transaction implements Comparable<Transaction> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,4 +37,9 @@ public class Transaction {
 
     @Column(name = "idempotency_key", unique = true)
     private String idempotencyKey;
+
+    @Override
+    public int compareTo(Transaction other) {
+        return other.eventTimeStamp.compareTo(this.eventTimeStamp);
+    }
 }

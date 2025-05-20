@@ -22,6 +22,6 @@ public class DashREST {
 
     @GetMapping("/transactions/{id}")
     public List<Map<String, Object>> showPrint(@PathVariable Integer id) {
-        return null;
+        return transactionsService.getFormattedTransactionsForUserThreeRecent(id);
     }
 }
