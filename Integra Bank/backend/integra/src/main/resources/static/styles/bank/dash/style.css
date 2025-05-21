@@ -36,8 +36,12 @@
         background-color: #5F7F56;
     }
 
+    .menu a.active {
+        background-color: #5F7F56; /* Darker background for active link */
+    }
+
     .menu button {
-        all: unset; /* Сбрасывает все стили кнопки */
+        all: unset; /* Resets all button styles */
         padding: 10px 16px;
         border-radius: 4px;
         text-decoration: none;

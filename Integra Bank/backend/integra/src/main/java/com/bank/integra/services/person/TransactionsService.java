@@ -80,11 +80,17 @@ public class TransactionsService {
         return result;
     }
 
-    public List<Map<String, Object>> getFormattedTransactionsForUser(Integer userId) {
+    public List<Map<String, Object>> getFormattedTransactionsForUser(Integer userId, int page, int size) {
         UserDetails user = userDetailsRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         List<Transaction> filtered = prepareLists(userId, user);
-        List<Map<String, Object>> result = formatLists(filtered, user);
+
+        int fromIndex = page * size;
+        int toIndex = Math.min(fromIndex + size, filtered.size());
+        if(fromIndex > filtered.size()) return Collections.emptyList();
+
+        List<Transaction> paged = filtered.subList(fromIndex, toIndex);
+        List<Map<String, Object>> result = formatLists(paged, user);
         return result;
     }
 

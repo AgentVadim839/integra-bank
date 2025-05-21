@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Integra Bank - Transaction History</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inknut+Antiqua:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <link href="/styles/bank/dash/style.css" rel="stylesheet" />
+    <style>
+        .dashboard-card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .transaction-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .transaction-item:last-child {
+            border-bottom: none;
+        }
+
+        .transaction-amount {
+            margin-top: 20px;
+        }
+
+        .loading {
+            background-color: #d1d5db; /* Gray background */
+            cursor: not-allowed; /* Change cursor to indicate loading */
+        }
+    </style>
+</head>
+<body class="bg-gray-200 min-h-screen flex">
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <div class="p-2 flex flex-col items-center">
+        <div class="logo-fancy">
+            <img alt="Bank logo placeholder" class="side-content" height="100" src="/styles/logo/logo1.png" width="100"/>
+            <h1 class="text-2xl text-center" style="font-family: 'Inknut Antiqua', serif;">Integra</h1>
+            <div class="separator"></div>
+        </div>
+    </div>
+    <nav class="menu">
+        <a th:href="@{/user/home}">Home</a>
+        <a href="#">Accounts</a>
+        <a class="active">Transactions</a>
+        <a href="#">Payments</a>
+        <a href="#">Settings</a>
+        <a href="#" class="your-class" onclick="document.getElementById('logoutForm').submit();">Logout</a>
+        <form id="logoutForm" th:action="@{/user/logout}" method="post" style="display: none;"></form>
+    </nav>
+</div>
+
+<!-- Main Content -->
+<div class="main-content p-8">
+    <h2 class="text-3xl font-bold mb-6">Transaction History</h2>
+
+    <div class="grid grid-cols-1 gap-6 mb-6">
+        <div class="dashboard-card bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-2xl font-bold text-gray-800 mb-4">All Transactions</h3>
+            <ul id="transactionList"></ul>
+
+            <div class="flex justify-center mt-4">
+                <button id="loadMoreBtn" class="w-full py-2 text-white font-semibold rounded transition"
+                        style="background-color: #7B9A6D;"
+                        onmouseover="this.style.backgroundColor='#6C895F';"
+                        onmouseout="this.style.backgroundColor='#7B9A6D';">
+                    Load More
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Success Notification -->
+<div id="transactionNotification"
+     th:if="${param.transactionSuccess}"
+     class="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg transition-opacity duration-500 opacity-100">
+    Transaction successful.
+</div>
+
+<!-- Scripts -->
+<script>
+    let currentPage = 0;
+    const pageSize = 5;
+
+    document.getElementById('loadMoreBtn').addEventListener('click', function () {
+        const button = this;
+        button.classList.add('loading'); // Add loading class
+        button.innerText = 'Loading...'; // Change button text
+
+        fetch(`/user/transactions/load?page=${currentPage}&size=${pageSize}`)
+            .then(res => res.json())
+            .then(data => {
+                const list = document.getElementById('transactionList');
+
+                if (data.length === 0) {
+                    button.disabled = true;
+                    button.innerText = 'No more transactions';
+                    return;
+                }
+
+                data.forEach(t => {
+                    const li = document.createElement('li');
+                    li.className = "transaction-item mb-4 pb-4 border-b border-gray-200";
+
+                    li.innerHTML = `
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="font-semibold text-gray-900">From: ${t.from}</p>
+                                <p class="font-semibold text-gray-900">To: ${t.to}</p>
+                                <p class="text-sm text-gray-600 mt-1">${t.description}</p>
+                                <p class="text-xs text-gray-400 mt-1">${t.timestamp}</p>
+                            </div>
+                            <div>
+                                <p class="text-right font-extrabold text-lg ${t.type === 'SENT' ? 'text-red-600' : 'text-green-600'}">
+                                    ${t.type === 'SENT' ? '-' : '+'}$${t.amount}
+                                </p>
+                            </div>
+                        </div>
+                    `;
+
+                    list.appendChild(li);
+                });
+
+                currentPage++;
+                button.classList.remove('loading'); // Remove loading class
+                button.innerText = 'Load More'; // Reset button text
+            })
+            .catch(err => {
+                console.error("Error loading:", err);
+                button.classList.remove('loading'); // Remove loading class on error
+                button.innerText = 'Load More'; // Reset button text
+            });
+    });
+
+    // Auto-load the first page
+    window.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('loadMoreBtn').click();
+    });
+
+    // Remove notification after 3 seconds
+    setTimeout(() => {
+        const notif = document.getElementById("transactionNotification");
+        if (notif) {
+            notif.style.opacity = '0';
+            setTimeout(() => notif.remove(), 500);
+        }
+    }, 3000);
+</script>
+
+</body>
+</html>

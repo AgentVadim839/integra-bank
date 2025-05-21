@@ -41,9 +41,9 @@
   </div>
  </div>
  <nav class="menu">
-  <a href="#">Home</a>
+  <a class="active">Home</a>
   <a href="#">Accounts</a>
-  <a href="#">Transactions</a>
+  <a th:href="@{/user/all-transactions}">Transactions</a>
   <a href="#">Payments</a>
   <a href="#">Settings</a>
   <a href="#" class="your-class" onclick="document.getElementById('logoutForm').submit();">Logout</a>
@@ -86,7 +86,7 @@
      </div>
     </li>
    </ul>
-   <a href="/user/transactions" class="block mt-6 text-base text-blue-600 hover:underline hover:text-blue-700 transition duration-300 ease-in-out">View All Transactions</a>
+   <a th:href="@{/user/all-transactions}" class="block mt-6 text-base text-blue-600 hover:underline hover:text-blue-700 transition duration-300 ease-in-out">View All Transactions</a>
   </div>
 
   <div class="dashboard-card">

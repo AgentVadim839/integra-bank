@@ -10,6 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 import java.util.Map;
@@ -54,6 +56,24 @@ public class DashboardController {
         model.addAttribute("transactions", threeRecentTransactions);
         return "dashboard";
     }
+
+    @GetMapping("/all-transactions")
+    public String showTransactionsPage() {
+        return "allTransactions";
+    }
+
+    @GetMapping("/transactions/load")
+    @ResponseBody
+    public List<Map<String, Object>> loadTransactions(
+            Authentication authentication,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+
+        Integer userId = Integer.parseInt(authentication.getName());
+        return transactionsService.getFormattedTransactionsForUser(userId, page, size);
+    }
+
+
 
     @GetMapping("/")
     public String showBase() {
