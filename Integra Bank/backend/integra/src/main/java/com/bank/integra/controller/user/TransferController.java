@@ -2,7 +2,7 @@ package com.bank.integra.controller.user;
 
 import com.bank.integra.services.DTO.TransferDTO;
 import com.bank.integra.services.bank.PaymentService;
-import com.bank.integra.services.person.TransactionsService;
+import com.bank.integra.services.bank.TransactionsService;
 import com.bank.integra.services.person.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

@@ -1,10 +1,6 @@
 package com.bank.integra.controller.user;
 
-import com.bank.integra.entities.details.Transaction;
-import com.bank.integra.entities.details.UserDetails;
-import com.bank.integra.entities.person.User;
-import com.bank.integra.services.person.TransactionsService;
-import com.bank.integra.services.person.UserService;
+import com.bank.integra.services.bank.TransactionsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

@@ -3,16 +3,16 @@ package com.bank.integra.services.bank;
 import com.bank.integra.dao.TransactionsRepository;
 import com.bank.integra.dao.UserDetailsRepository;
 import com.bank.integra.entities.details.UserDetails;
-import com.bank.integra.services.person.TransactionsService;
 import com.bank.integra.services.person.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 //TODO Каждый sout - громкий пук, который отдаляет от логгера, не меняем!!
-//TODO квитанцию пдф и валидации нада дахуа
+//TODO квитанцию пдф и валидации нада дахуа (себе можно отправить)
 @Service
 public class PaymentService {
     @Autowired
@@ -23,6 +23,9 @@ public class PaymentService {
 
     @Autowired
     private TransactionsService transactionsService;
+
+    @Autowired
+    private AsyncPdfGenerationService pdfGenerationService;
 
     //TODO убери, тут не срут
     @Autowired
@@ -43,9 +46,12 @@ public class PaymentService {
             receiverUserDetails.setBalance(receiverUserDetails.getBalance() + amount);
             userDetailsRepository.save(payerUserDetails);
             userDetailsRepository.save(receiverUserDetails);
+            LocalDateTime localDateTime = LocalDateTime.now();
             if(transactionsService.createAndSave(payerPersonId, receiverPersonId, amount, "", idempotencyKey) == null) {
                 throw new IllegalArgumentException();
             }
+            int transactionId = transactionsService.findTransactionIdByIdempotencyKey(idempotencyKey.toString());
+            pdfGenerationService.generateReceiptAsync(transactionId+"");
         } else {
             System.out.println("womp womp");
         }

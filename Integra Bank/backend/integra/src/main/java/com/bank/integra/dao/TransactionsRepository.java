@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -13,4 +14,5 @@ public interface TransactionsRepository extends JpaRepository<Transaction, Integ
     List<Transaction> findBySender(UserDetails sender);
     List<Transaction> findByRecipient(UserDetails recipient);
     boolean existsByIdempotencyKey(String idempotencyKey);
+    Optional<Transaction> findByIdempotencyKey(String idempotencyKey);
 }

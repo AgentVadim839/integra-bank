@@ -1,16 +1,16 @@
-package com.bank.integra.services.person;
+package com.bank.integra.services.bank;
 
 import com.bank.integra.dao.TransactionsRepository;
 import com.bank.integra.dao.UserDetailsRepository;
 import com.bank.integra.entities.details.Transaction;
 import com.bank.integra.entities.details.UserDetails;
 import com.bank.integra.services.customTools.OlegList;
+import com.bank.integra.services.person.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class TransactionsService {
@@ -102,7 +102,14 @@ public class TransactionsService {
         return result;
     }
 
+    public Integer findTransactionIdByIdempotencyKey(String idempotencyKey) {
+        Optional<Transaction> transactionOptional = transactionRepository.findByIdempotencyKey(idempotencyKey);
+        return transactionOptional.map(Transaction::getId).orElse(null);
+    }
 
+    public Optional<Transaction> getTransactionById(Integer id) {
+        return transactionRepository.findById(id);
+    }
 
     public List<Transaction> getReceivedTransactions(Integer recipientId) {
         return transactionRepository.findByRecipient(userService.getUserDetailsByUserId(recipientId));
