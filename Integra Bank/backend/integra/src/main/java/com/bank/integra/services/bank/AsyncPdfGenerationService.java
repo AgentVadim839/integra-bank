@@ -1,19 +1,17 @@
 package com.bank.integra.services.bank;
 
+import com.bank.integra.dao.PdfRepository;
+import com.bank.integra.entities.details.PdfReceipt;
 import com.bank.integra.entities.details.Transaction;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
@@ -22,7 +20,10 @@ import java.util.Optional;
 @Service
 public class AsyncPdfGenerationService {
     @Autowired
-    TransactionsService transactionsService;
+    private TransactionsService transactionsService;
+
+    @Autowired
+    private PdfRepository pdfRepository;
 
     public void generateReceiptAsync(String transactionId) {
         System.out.println("Начинаем *:･ﾟ✧*:･ﾟ✧асинхронную*:･ﾟ✧*:･ﾟ✧ генерацию пдф");
@@ -88,14 +89,10 @@ public class AsyncPdfGenerationService {
 
             byte[] pdfBytes = baos.toByteArray();
 
-            String tmpDir = System.getProperty("java.io.tmpdir");
-            String filename = tmpDir + File.separator + transactionId + "_receipt.pdf";
+            PdfReceipt pdfReceipt = new PdfReceipt(transactionId, transaction.getEventTimeStamp(), pdfBytes);
+            pdfRepository.save(pdfReceipt);
 
-            try (FileOutputStream fos = new FileOutputStream(filename)) {
-                fos.write(pdfBytes);
-            }
-
-            System.out.println("PDF сохранён на диск по пути: " + filename);
+            System.out.println("Сахраніл)) пдф))");
 
         } catch (Exception p) {
             System.out.println("хрен его знает, что с тем пдф:");
