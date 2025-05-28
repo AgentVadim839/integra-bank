@@ -8,6 +8,7 @@ import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
@@ -25,6 +26,7 @@ public class AsyncPdfGenerationService {
     @Autowired
     private PdfRepository pdfRepository;
 
+    @Async("pdfGenerationExecutor")
     public void generateReceiptAsync(String transactionId) {
         System.out.println("Начинаем *:･ﾟ✧*:･ﾟ✧асинхронную*:･ﾟ✧*:･ﾟ✧ генерацию пдф");
         try (InputStream templateStream = getClass().getResourceAsStream("/pdf/cvfg.pdf")) {

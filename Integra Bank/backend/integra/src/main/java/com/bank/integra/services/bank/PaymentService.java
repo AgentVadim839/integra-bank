@@ -7,6 +7,8 @@ import com.bank.integra.services.person.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -46,12 +48,17 @@ public class PaymentService {
             receiverUserDetails.setBalance(receiverUserDetails.getBalance() + amount);
             userDetailsRepository.save(payerUserDetails);
             userDetailsRepository.save(receiverUserDetails);
-            LocalDateTime localDateTime = LocalDateTime.now();
             if(transactionsService.createAndSave(payerPersonId, receiverPersonId, amount, "", idempotencyKey) == null) {
                 throw new IllegalArgumentException();
             }
             int transactionId = transactionsService.findTransactionIdByIdempotencyKey(idempotencyKey.toString());
-            pdfGenerationService.generateReceiptAsync(transactionId+"");
+            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+                @Override
+                public void afterCommit() {
+                    // Этот код запустится после успешного коммита
+                    pdfGenerationService.generateReceiptAsync(transactionId+"");
+                }
+            });
         } else {
             System.out.println("womp womp");
         }
