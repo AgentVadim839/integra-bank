@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.*;
 
+//TODO Написать тесты для транзекшнс хесторе
+//TODO и сделать динамическое отображение недавних транзакций, даже если < 3
 @Service
 public class TransactionsService {
 
@@ -80,6 +82,18 @@ public class TransactionsService {
         return result;
     }
 
+    public List<Map<String, Object>> getFormattedTransactionsForUserThreeRecent(Integer userId) {
+        UserDetails user = userDetailsRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        List<Transaction> filtered = prepareLists(userId, user);
+        if(filtered.isEmpty()) {
+            return List.of();
+        } else {
+            List<Transaction> recent = filtered.subList(0, Math.min(3, filtered.size()));
+            return formatLists(recent, user);
+        }
+    }
+
     public List<Map<String, Object>> getFormattedTransactionsForUser(Integer userId, int page, int size) {
         UserDetails user = userDetailsRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -94,13 +108,7 @@ public class TransactionsService {
         return result;
     }
 
-    public List<Map<String, Object>> getFormattedTransactionsForUserThreeRecent(Integer userId) {
-        UserDetails user = userDetailsRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        List<Transaction> filtered = prepareLists(userId, user).subList(0,2);
-        List<Map<String, Object>> result = formatLists(filtered, user);
-        return result;
-    }
+
 
     public Integer findTransactionIdByIdempotencyKey(String idempotencyKey) {
         Optional<Transaction> transactionOptional = transactionRepository.findByIdempotencyKey(idempotencyKey);

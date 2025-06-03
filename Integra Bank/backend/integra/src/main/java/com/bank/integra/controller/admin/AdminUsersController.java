@@ -24,8 +24,6 @@ public class AdminUsersController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private UserDetailsRepository userDetailsRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;

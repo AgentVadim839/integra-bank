@@ -17,7 +17,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 //TODO уже хренотень: ачо будет если не сгенерит квитанцию????? АЧО АКАК?? М???
-//TODO Ну лучше в бд сохранять  както
 @Service
 public class AsyncPdfGenerationService {
     @Autowired
