@@ -94,7 +94,7 @@ public class SecurityConfiguration {
                         .logoutSuccessUrl("/user/login?logout")
                         .permitAll()
                 )
-                .userDetailsService(userDetailsService);;
+                .userDetailsService(userDetailsService);
         return http.build();
     }
 }

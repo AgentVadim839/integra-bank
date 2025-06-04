@@ -53,7 +53,20 @@ public class TransactionsService {
 
     private List<Transaction> prepareLists(Integer userId, UserDetails user) {
         List<Transaction> filtered = transactionRepository.findAll().stream()
-                .filter(t -> t.getSender().equals(user) || t.getRecipient().equals(user))
+                .filter(t -> {
+                    UserDetails sender = t.getSender();
+                    UserDetails recipient = t.getRecipient();
+
+                    // Проверяем, что отправитель не null и равен текущему пользователю
+                    boolean isSender = (sender != null && sender.equals(user));
+
+                    // Проверяем, что получатель не null и равен текущему пользователю
+                    boolean isRecipient = (recipient != null && recipient.equals(user));
+
+                    // Возвращаем true, если текущий пользователь является отправителем или получателем
+                    // Соответственно если пользователь == null, тогда результатом будет false
+                    return isSender || isRecipient;
+                })
                 .sorted() // тут работает Comparable<Transaction>
                 .toList();
         return filtered;

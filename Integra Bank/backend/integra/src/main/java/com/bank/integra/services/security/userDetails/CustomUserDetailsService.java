@@ -6,6 +6,7 @@ import com.bank.integra.entities.person.User;
 import com.bank.integra.dao.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -28,11 +29,14 @@ public class CustomUserDetailsService implements UserDetailsService {
     private UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException, DisabledException {
         try {
             Integer id = Integer.parseInt(userId);
             User user = userRepository.findById(id)
                     .orElseThrow(() -> new UsernameNotFoundException("User not found with id: " + userId));
+            if(!user.isActive()) {
+                throw new DisabledException("User account is disabled.");
+            }
             return createUserDetails(user.getId(), user.getPassword(), user.getRoles());
         } catch (NumberFormatException f) {
             throw new UsernameNotFoundException("Invalid user id: " + userId);

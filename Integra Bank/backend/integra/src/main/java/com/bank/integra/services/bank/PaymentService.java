@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 //TODO Каждый sout - громкий пук, который отдаляет от логгера, не меняем!!
-//TODO квитанцию пдф и валидации нада дахуа (себе можно отправить)
+//TODO валидации нада дахуа (себе можно отправить) + проверка на бан пользователя, забаненым не шлём бабло.
 @Service
 public class PaymentService {
     @Autowired
