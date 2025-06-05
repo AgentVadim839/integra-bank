@@ -47,7 +47,7 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6"> <!-- Используем flexbox для расположения карточек "Change Email" и "Change Password" рядом -->
         <div class="dashboard-card col-span-1 md:col-span-2">
             <h3 class="text-xl font-semibold mb-2">Change Email</h3>
-            <form action="/user/change-email" method="post" class="flex flex-col space-y-3">
+            <form th:action="@{/user/change-email}" method="post" class="flex flex-col space-y-3">
                 <div>
                     <p class="block text-gray-700 text-sm font-bold mb-2">Current email:</p>
                     <p class="block text-gray-700 text-sm font-bold mb-2"><span th:text="${user.email}"></span></p>

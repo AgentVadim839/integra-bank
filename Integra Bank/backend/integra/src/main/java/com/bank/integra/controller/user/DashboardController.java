@@ -8,10 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -78,6 +75,16 @@ public class DashboardController {
         UserDetails user = userService.getUserDetailsByUserId(userId);
         model.addAttribute("user", user);
         return "settings";
+    }
+
+    //TODO Ва-ли-да-ци-я~
+    @PostMapping("/change-email")
+    public String changeEmail(@RequestParam String newEmail, Authentication authentication) {
+        Integer userId = Integer.parseInt(authentication.getName());
+        UserDetails user = userService.getUserDetailsByUserId(userId);
+        user.setEmail(newEmail);
+        userService.updateUserDetails(user);
+        return "redirect:/user/settings";
     }
 
     @GetMapping("/")
