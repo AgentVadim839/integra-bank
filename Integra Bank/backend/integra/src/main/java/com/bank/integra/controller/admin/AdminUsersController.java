@@ -17,7 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
-//TODO Рекомендуется использовать "мягкое" удаления путём блокирования юзера. А ЕЩО лучше сделать и то и то. КРч реализовать БАН
+//TODO Сделать норм инфо-поле, как у юзера с транзакциями.
 @Controller
 @RequestMapping("/admin/users")
 public class AdminUsersController {
@@ -45,6 +45,30 @@ public class AdminUsersController {
         return "adminUsersList";
     }
 
+    @PostMapping("/ban/{id}")
+    public String banUser(@PathVariable int id) {
+        User user = userService.getUserById(id);
+        if (user == null) {
+            throw new RuntimeException("User " + id + " not found.");
+        }
+
+        user.setActive(false);
+        userService.updateUser(user);
+        return "redirect:/admin/users?banned=true";
+    }
+
+    @PostMapping("/unban/{id}")
+    public String unbanUser(@PathVariable int id) {
+        User user = userService.getUserById(id);
+        if (user == null) {
+            throw new RuntimeException("User " + id + " not found.");
+        }
+
+        user.setActive(true);
+        userService.updateUser(user);
+        return "redirect:/admin/users?banned=true";
+    }
+
     // Aint no model attributes required, js already sends success message after deleting.
     @PostMapping("/delete/{id}")
     public String deleteUser(@PathVariable int id) {
@@ -54,7 +78,7 @@ public class AdminUsersController {
          }
 
          userService.deleteUserById(id);
-        return "redirect:/admin/users?deleted=true";
+         return "redirect:/admin/users?deleted=true";
     }
 
     @GetMapping("/edit/{id}")

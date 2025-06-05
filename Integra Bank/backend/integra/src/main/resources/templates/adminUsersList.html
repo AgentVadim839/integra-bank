@@ -7,7 +7,7 @@
 </head>
 <body class="bg-gray-100 min-h-screen p-8">
 
-<div class="max-w-5xl mx-auto bg-white shadow-lg rounded-lg p-6">
+<div class="max-w-6xl mx-auto bg-white shadow-lg rounded-lg p-6">
     <h2 class="text-3xl font-bold mb-6">All Users</h2>
 
     <table class="w-full text-left border-collapse">
@@ -18,7 +18,7 @@
             <th class="py-2 px-4 border-b">Last Name</th>
             <th class="py-2 px-4 border-b">Email</th>
             <th class="py-2 px-4 border-b">Balance</th>
-            <th class="py-2 px-4 border-b">Actions</th>
+            <th class="py-2 px-4 border-b">Status</th> <th class="py-2 px-4 border-b">Actions</th>
         </tr>
         </thead>
         <tbody>
@@ -28,6 +28,10 @@
             <td class="py-2 px-4 border-b" th:text="${user.userDetails.lastName}"></td>
             <td class="py-2 px-4 border-b" th:text="${user.userDetails.email}"></td>
             <td class="py-2 px-4 border-b" th:text="${user.userDetails.balance}"></td>
+            <td class="py-2 px-4 border-b">
+                <span th:if="${user.active}" class="text-green-600 font-semibold">Active</span>
+                <span th:unless="${user.active}" class="text-red-600 font-semibold">Banned</span>
+            </td>
             <td class="py-2 px-4 border-b flex space-x-2">
                 <a th:href="@{'/admin/users/edit/' + ${user.id}}"
                    class="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded text-sm">Edit</a>
@@ -36,6 +40,21 @@
                             class="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded text-sm"
                             onclick="return confirm('Are you sure you want to delete this user?');">
                         Delete
+                    </button>
+                </form>
+
+                <form th:if="${user.active}" th:action="@{'/admin/users/ban/' + ${user.id}}" method="post">
+                    <button type="submit"
+                            class="bg-orange-500 hover:bg-orange-600 text-white py-1 px-3 rounded text-sm"
+                            onclick="return confirm('Are you sure you want to ban this user?');">
+                        BAN
+                    </button>
+                </form>
+                <form th:unless="${user.active}" th:action="@{'/admin/users/unban/' + ${user.id}}" method="post">
+                    <button type="submit"
+                            class="bg-green-500 hover:bg-green-600 text-white py-1 px-3 rounded text-sm"
+                            onclick="return confirm('Are you sure you want to unban this user?');">
+                        UNBAN
                     </button>
                 </form>
             </td>
@@ -54,15 +73,34 @@
     User was deleted successfully.
 </div>
 
+<div id="banStatusNotification"
+     th:if="${banStatus}"
+     class="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg transition-opacity duration-500 opacity-100">
+    <span th:text="${banStatus}"></span>
+</div>
+
+<div id="banStatusErrorNotification"
+     th:if="${banStatusError}"
+     class="fixed top-4 right-4 bg-red-500 text-white px-4 py-2 rounded shadow-lg transition-opacity duration-500 opacity-100">
+    <span th:text="${banStatusError}"></span>
+</div>
+
+
 <script>
-    // Убираем уведомление через 3 секунды
-    setTimeout(() => {
-        const notif = document.getElementById("notification");
+    // Скрипт для скрытия уведомлений
+    function hideNotification(elementId) {
+        const notif = document.getElementById(elementId);
         if (notif) {
-            notif.style.opacity = '0';
-            setTimeout(() => notif.remove(), 500);
+            setTimeout(() => {
+                notif.style.opacity = '0';
+                setTimeout(() => notif.remove(), 500);
+            }, 3000);
         }
-    }, 3000);
+    }
+
+    hideNotification("notification");
+    hideNotification("banStatusNotification");
+    hideNotification("banStatusErrorNotification");
 </script>
 
 </body>
