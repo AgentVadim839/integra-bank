@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 //TODO Каждый sout - громкий пук, который отдаляет от логгера, не меняем!!
@@ -38,6 +37,7 @@ public class PaymentService {
     @Transactional
     public void makePayment(Integer payerPersonId, Integer receiverPersonId, Double amount, UUID idempotencyKey) {
         if (checkIfUserNull(payerPersonId, receiverPersonId, userService)) return;
+        if (checkIfUserIsBanned(receiverPersonId, userService)) return;
         if(!transactionsRepository.existsByIdempotencyKey(idempotencyKey.toString())) {
             UserDetails payerUserDetails = userService.getUserDetailsByUserId(payerPersonId);
             UserDetails receiverUserDetails = userService.getUserDetailsByUserId(receiverPersonId);
@@ -76,5 +76,13 @@ public class PaymentService {
             return true;
         }
         return false;
+    }
+
+    public static boolean checkIfUserIsBanned(Integer recipientId, UserService userService) {
+        if(userService.getUserById(recipientId).isActive()) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }

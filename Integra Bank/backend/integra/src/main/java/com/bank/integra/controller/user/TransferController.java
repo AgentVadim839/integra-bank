@@ -36,6 +36,9 @@ public class TransferController {
             case 1:
                 redirectAttributes.addFlashAttribute("information", "Not enough funds for transfer operation.");
                 return "redirect:/user/home";
+            case 3:
+                redirectAttributes.addFlashAttribute("information", "The user is blocked.");
+                return "redirect:/user/home";
 
         }
         TransferDTO transferDTO = new TransferDTO(senderId, recipientId, amount,
@@ -49,8 +52,9 @@ public class TransferController {
     }
 
     private int checkBeforePayment(Integer senderId, Integer recipientId, Double amount) {
-        if(paymentService.checkIfUserNull(senderId, recipientId, userService)) return 0;
-        if(paymentService.checkIfUserHasEnoughMoney(amount, userService.getUserDetailsByUserId(senderId))) return 1;
+        if(PaymentService.checkIfUserNull(senderId, recipientId, userService)) return 0;
+        if(PaymentService.checkIfUserHasEnoughMoney(amount, userService.getUserDetailsByUserId(senderId))) return 1;
+        if(PaymentService.checkIfUserIsBanned(recipientId, userService)) return 3;
         return 2;
     }
 

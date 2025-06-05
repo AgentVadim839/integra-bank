@@ -1,0 +1,20 @@
+package com.bank.integra.config.web;
+
+import com.bank.integra.services.security.filters.UserStatusInterceptor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+@Configuration
+public class WebConfig implements WebMvcConfigurer {
+    @Autowired
+    private UserStatusInterceptor userStatusInterceptor;
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(userStatusInterceptor)
+                .addPathPatterns("/user/**")
+                .excludePathPatterns("/user/login", "/user/authenticateTheUser", "/user/logout");
+    }
+}
