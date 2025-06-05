@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Integra Bank - Settings</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inknut+Antiqua:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <link href="/styles/bank/dash/style.css" rel="stylesheet" />
+    <style>
+        .dashboard-card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            flex: 1; /* Позволяет карточкам занимать равное пространство */
+            min-width: 250px; /* Минимальная ширина карточки */
+        }
+    </style>
+</head>
+<body class="bg-gray-200 min-h-screen flex">
+<div class="sidebar">
+    <div class="p-2 flex flex-col items-center">
+        <div class="logo-fancy">
+            <img alt="Bank logo placeholder" class="side-content" height="100" src="/styles/logo/logo1.png" width="100"/>
+            <h1 class="text-2xl text-center" style="font-family: 'Inknut Antiqua', serif;">Integra</h1>
+            <div class="separator"></div>
+        </div>
+    </div>
+    <nav class="menu">
+        <a th:href="@{/user/home}">Home</a>
+        <a href="#">Accounts</a>
+        <a th:href="@{/user/all-transactions}">Transactions</a>
+        <a href="#">Payments</a>
+        <a class="active">Settings</a>
+        <a href="#" class="your-class" onclick="document.getElementById('logoutForm').submit();">Logout</a>
+        <form id="logoutForm" action="/user/logout" method="post" style="display: none;">
+        </form>
+    </nav>
+</div>
+<div class="main-content p-8">
+    <h2 class="text-3xl font-bold mb-6">Settings</h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6"> <!-- Используем flexbox для расположения карточек "Change Email" и "Change Password" рядом -->
+        <div class="dashboard-card col-span-1 md:col-span-2">
+            <h3 class="text-xl font-semibold mb-2">Change Email</h3>
+            <form action="/user/change-email" method="post" class="flex flex-col space-y-3">
+                <div>
+                    <p class="block text-gray-700 text-sm font-bold mb-2">Current email:</p>
+                    <p class="block text-gray-700 text-sm font-bold mb-2"><span th:text="${user.email}"></span></p>
+                    <label for="newEmail" class="block text-gray-700 text-sm font-bold mb-2">New Email:</label>
+                    <input type="email" id="newEmail" name="newEmail" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Enter new email" required>
+                </div>
+                <button
+                        class="w-full py-2 text-white font-semibold rounded shadow-md transition-colors duration-200"
+                        style="background-color: #7B9A6D;"
+                        onmouseover="this.style.backgroundColor='#6C895F';"
+                        onmouseout="this.style.backgroundColor='#7B9A6D';"
+                        type="submit"
+                >
+                    Change Email
+                </button>
+            </form>
+        </div>
+
+        <div class="dashboard-card col-span-1">
+            <h3 class="text-xl font-semibold mb-2">Change Password</h3>
+            <form action="/user/change-password" method="post" class="flex flex-col space-y-3">
+                <p class="block text-gray-700 text-sm font-bold mb-2">A confirmation link will be sent to your registered email address to proceed with the password change.</p>
+                <button
+                        class="w-full py-2 text-white font-semibold rounded shadow-md transition-colors duration-200"
+                        style="background-color: #7B9A6D;"
+                        onmouseover="this.style.backgroundColor='#6C895F';"
+                        onmouseout="this.style.backgroundColor='#7B9A6D';"
+                        type="submit"
+                >
+                    Change Password
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="dashboard-card">
+        <h3 class="text-2xl font-semibold text-gray-800 mb-4">Personal Information</h3>
+        <p class="text-lg text-gray-700 mb-2">First Name: <span class="font-bold text-gray-900" th:text="${user.firstName}">John</span></p>
+        <p class="text-lg text-gray-700">Last Name: <span class="font-bold text-gray-900" th:text="${user.lastName}">Doe</span></p>
+    </div>
+</div>
+
+<!-- Уведомление об успешном изменении -->
+<div id="infoNotification" style="display: none;" class="fixed top-4 right-4 text-white px-4 py-2 rounded shadow-lg transition-opacity duration-500 opacity-100">
+</div>
+
+<script>
+    // Убираем уведомление через 3 секунды
+    setTimeout(() => {
+        const infoNotif = document.getElementById("infoNotification");
+        if (infoNotif) {
+            infoNotif.style.opacity = '0';
+            setTimeout(() => infoNotif.remove(), 500);
+        }
+    }, 3000);
+</script>
+
+</body>
+</html>

@@ -45,7 +45,7 @@
   <a href="#">Accounts</a>
   <a th:href="@{/user/all-transactions}">Transactions</a>
   <a href="#">Payments</a>
-  <a href="#">Settings</a>
+  <a th:href="@{/user/settings}">Settings</a>
   <a href="#" class="your-class" onclick="document.getElementById('logoutForm').submit();">Logout</a>
   <form id="logoutForm" th:action="@{/user/logout}" method="post" style="display: none;">
   </form>

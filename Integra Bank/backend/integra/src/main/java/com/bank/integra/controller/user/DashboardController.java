@@ -72,7 +72,13 @@ public class DashboardController {
         return transactionsService.getFormattedTransactionsForUser(userId, page, size);
     }
 
-
+    @GetMapping("/settings")
+    public String showSettings(Authentication authentication, Model model) {
+        Integer userId = Integer.parseInt(authentication.getName());
+        UserDetails user = userService.getUserDetailsByUserId(userId);
+        model.addAttribute("user", user);
+        return "settings";
+    }
 
     @GetMapping("/")
     public String showBase() {
