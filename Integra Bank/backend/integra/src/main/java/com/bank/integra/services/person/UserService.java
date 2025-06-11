@@ -69,4 +69,8 @@ public class UserService {
     public Boolean existsByEmail(String email) {
         return userDetailsRepository.existsByEmail(email);
     }
+
+    public Boolean existsByUserId(Integer id) {
+        return userDetailsRepository.existsByUserId(id);
+    }
 }

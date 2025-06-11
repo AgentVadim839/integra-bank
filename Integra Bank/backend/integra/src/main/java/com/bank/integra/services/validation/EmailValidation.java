@@ -18,7 +18,7 @@ public class EmailValidation {
 
         //TODO API проверка на временный эмаил, https://disposable.debounce.io/?email=info@example.com
 
-        if(userService.getUserDetailsByUserId(userId).getEmail().equals(email)) {
+        if(userService.existsByUserId(userId) && userService.getUserDetailsByUserId(userId).getEmail().equals(email)) {
             return EmailValidationResponse.EMAIL_IS_SAME_AS_CURRENT;
         }
 

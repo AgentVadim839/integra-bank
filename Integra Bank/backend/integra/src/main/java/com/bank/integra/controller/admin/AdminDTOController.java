@@ -7,9 +7,11 @@ import com.bank.integra.dao.UserRepository;
 import com.bank.integra.entities.details.UserDetails;
 import com.bank.integra.entities.person.User;
 import com.bank.integra.entities.role.Role;
+import com.bank.integra.enums.EmailValidationResponse;
 import com.bank.integra.services.DTO.AdminDTO;
 import com.bank.integra.services.admin.AdminPersistUserService;
 import com.bank.integra.services.person.UserService;
+import com.bank.integra.services.validation.EmailValidation;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +21,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/admin")
@@ -32,13 +35,23 @@ public class AdminDTOController {
     @Autowired
     private AdminPersistUserService persistUserService;
 
+    @Autowired
+    private UserService userService;
+
     //TODO хуйня, валидацию тоже надо
     @PostMapping("/save-user")
-    public String processForm(@Valid @ModelAttribute AdminDTO adminDTO, BindingResult bindingResult, Model model) {
+    public String processForm(@Valid @ModelAttribute AdminDTO adminDTO, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
         if(bindingResult.hasErrors()) {
-            return "/admin/home";
+            return "redirect:/admin/home";
         }
-        persistUserService.saveUserFromForm(adminDTO, model);
-        return "result";
+        EmailValidationResponse response = EmailValidation.checkEmail(adminDTO.getEmail(), adminDTO.getUserId(), userService);
+        if(response.isSuccess()) {
+            persistUserService.saveUserFromForm(adminDTO, model);
+            return "result";
+        } else {
+            redirectAttributes.addFlashAttribute("information", response.getDescription());
+            return "redirect:/admin/home";
+        }
+
     }
 }

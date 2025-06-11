@@ -69,5 +69,41 @@
         </div>
     </div>
 </div>
+
+<div id="infoNotification"
+     th:if="${information}"
+     th:text="${information}"
+     th:classappend="${information.contains('Email was changed successfully.')} ? ' bg-green-500' : ' bg-red-500'"
+     class="fixed top-4 right-4 text-white px-4 py-2 rounded shadow-lg transition-opacity duration-500 opacity-100">
+</div>
+
+<script>
+    // Убираем уведомление через 3 секунды
+    setTimeout(() => {
+        const infoNotif = document.getElementById("infoNotification");
+        if (infoNotif) {
+            infoNotif.style.opacity = '0';
+            setTimeout(() => infoNotif.remove(), 500);
+        }
+    }, 3000);
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const forms = document.querySelectorAll('form');
+
+        forms.forEach(form => {
+            const button = form.querySelector('button[type="submit"]');
+            if (button) {
+                form.addEventListener("submit", function () {
+                    button.disabled = true;
+                    button.innerText = "Processing...";
+                    button.style.backgroundColor = "#6C895F";
+                });
+            }
+        });
+    });
+</script>
+
 </body>
 </html>
