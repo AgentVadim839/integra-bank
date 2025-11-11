@@ -1,17 +1,18 @@
-package com.bank.integra.tests;
+package com.bank.integra.admin.service;
 
 import com.bank.integra.general.repository.RolesRepository;
 import com.bank.integra.user.model.UserDetails;
 import com.bank.integra.user.model.User;
 import com.bank.integra.general.model.Role;
 import com.bank.integra.admin.dto.AdminDTO;
-import com.bank.integra.admin.service.AdminPersistUserService;
 import com.bank.integra.user.service.UserService;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.ui.Model;
@@ -19,9 +20,9 @@ import org.springframework.ui.Model;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@Nested
-@SpringBootTest // Використовуємо SpringBootTest для повної ініціалізації контексту (може бути корисно для складніших сценаріїв)
-class SaveUserTest {
+
+@ExtendWith(MockitoExtension.class) // Використовуємо SpringBootTest для повної ініціалізації контексту (може бути корисно для складніших сценаріїв)
+class AdminPersistUserServiceTest {
 
     @Mock
     private UserService userService;

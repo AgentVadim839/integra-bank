@@ -1,9 +1,8 @@
-package com.bank.integra.tests;
+package com.bank.integra.admin.service;
 
 import com.bank.integra.user.model.UserDetails;
 import com.bank.integra.user.model.User;
 import com.bank.integra.admin.dto.AdminDTO;
-import com.bank.integra.admin.service.AdminUpdateUserService;
 import com.bank.integra.user.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +17,7 @@ import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
-public class UpdateUserTest {
+public class AdminUpdateUserServiceTest {
 
     @InjectMocks
     private AdminUpdateUserService adminUpdateUserService;
