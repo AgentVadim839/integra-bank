@@ -26,14 +26,15 @@ public class SecurityConfiguration {
         return new BCryptPasswordEncoder();
     }
 
-    @Autowired
-    private CustomUserDetailsService userDetailsService;
+    private final CustomUserDetailsService userDetailsService;
+    private final AdminUserDetailsService adminUserDetailsService;
+    private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
 
-    @Autowired
-    private AdminUserDetailsService adminUserDetailsService;
-
-    @Autowired
-    private CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
+    public SecurityConfiguration(CustomUserDetailsService userDetailsService, AdminUserDetailsService adminUserDetailsService, CustomAuthenticationFailureHandler customAuthenticationFailureHandler) {
+        this.userDetailsService = userDetailsService;
+        this.adminUserDetailsService = adminUserDetailsService;
+        this.customAuthenticationFailureHandler = customAuthenticationFailureHandler;
+    }
 
     /**
      * Security configuration for admin routes.

@@ -13,19 +13,15 @@ import java.util.List;
 
 @Service
 public class UserService {
+    private final UserRepository userRepository;
+    private final UserDetailsRepository userDetailsRepository;
+    private final RolesRepository rolesRepository;
 
-    public UserService() {
-
+    public UserService(UserRepository userRepository, UserDetailsRepository userDetailsRepository, RolesRepository rolesRepository) {
+        this.userRepository = userRepository;
+        this.userDetailsRepository = userDetailsRepository;
+        this.rolesRepository = rolesRepository;
     }
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private UserDetailsRepository userDetailsRepository;
-
-    @Autowired
-    private RolesRepository rolesRepository;
 
     @Transactional
     public User createUser(User user, UserDetails userDetails) {

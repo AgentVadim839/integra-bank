@@ -20,11 +20,13 @@ import java.util.Optional;
 //TODO уже хренотень: ачо будет если не сгенерит квитанцию????? АЧО АКАК?? М???
 @Service
 public class PdfGenerationService {
-    @Autowired
-    private TransactionsService transactionsService;
+    private final TransactionsService transactionsService;
+    private final PdfRepository pdfRepository;
 
-    @Autowired
-    private PdfRepository pdfRepository;
+    public PdfGenerationService(TransactionsService transactionsService, PdfRepository pdfRepository) {
+        this.transactionsService = transactionsService;
+        this.pdfRepository = pdfRepository;
+    }
 
     @Async("pdfGenerationExecutor")
     public void generateReceiptAsync(String transactionId) {

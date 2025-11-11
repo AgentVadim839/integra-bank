@@ -14,13 +14,15 @@ import java.util.*;
 //TODO Написать тесты для транзекшнс хесторе
 @Service
 public class TransactionsService {
+    private final TransactionsRepository transactionRepository;
+    private final UserDetailsRepository userDetailsRepository;
+    private final UserService userService;
 
-    @Autowired
-    private TransactionsRepository transactionRepository;
-    @Autowired
-    private UserDetailsRepository userDetailsRepository;
-    @Autowired
-    private UserService userService;
+    public TransactionsService(TransactionsRepository transactionRepository, UserDetailsRepository userDetailsRepository, UserService userService) {
+        this.transactionRepository = transactionRepository;
+        this.userDetailsRepository = userDetailsRepository;
+        this.userService = userService;
+    }
 
     public Transaction saveTransaction(Transaction transaction) {
         UserDetails sender = userDetailsRepository.findById(transaction.getSender().getUserId()).orElse(null);

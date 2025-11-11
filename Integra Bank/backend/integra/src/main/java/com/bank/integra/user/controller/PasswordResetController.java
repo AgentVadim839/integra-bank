@@ -21,14 +21,15 @@ import java.time.LocalDateTime;
 @RequestMapping("/user")
 @Controller
 public class PasswordResetController {
-    @Autowired
-    PasswordResetTokenService resetTokenService;
+    private final PasswordResetTokenService resetTokenService;
+    private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    public PasswordResetController(PasswordResetTokenService resetTokenService, UserService userService, PasswordEncoder passwordEncoder) {
+        this.resetTokenService = resetTokenService;
+        this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @GetMapping("/reset-password")
     public String showResetPasswordPage(@RequestParam("token") String token, Model model) {

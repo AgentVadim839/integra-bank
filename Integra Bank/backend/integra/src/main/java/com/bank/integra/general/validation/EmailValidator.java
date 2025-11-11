@@ -13,7 +13,6 @@ public class EmailValidator {
 
     private static DisposableEmailChecker disposableEmailChecker;
 
-    @Autowired
     public EmailValidator(DisposableEmailChecker disposableEmailChecker) {
         EmailValidator.disposableEmailChecker = disposableEmailChecker;
     }

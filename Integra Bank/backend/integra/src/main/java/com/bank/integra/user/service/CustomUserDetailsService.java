@@ -22,9 +22,12 @@ import java.util.stream.Collectors;
  */
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
+    //TODO А че не сервис?
+    private final UserRepository userRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    public CustomUserDetailsService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException, DisabledException {

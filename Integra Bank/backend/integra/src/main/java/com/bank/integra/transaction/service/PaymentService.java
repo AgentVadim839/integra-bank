@@ -16,18 +16,17 @@ import java.util.UUID;
 //TODO Перевести всю логику валидации в отдельный класс (для контроллера тоже) и слать енумы в виде ответа, как у емаил валидатор
 @Service
 public class PaymentService {
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+    private final UserDetailsRepository userDetailsRepository;
+    private final TransactionsService transactionsService;
+    private final AsyncManager asyncManager;
 
-    @Autowired
-    private UserDetailsRepository userDetailsRepository;
-
-    @Autowired
-    private TransactionsService transactionsService;
-
-    @Autowired
-    private AsyncManager asyncManager;
-    public PaymentService() {}
+    public PaymentService(UserService userService, UserDetailsRepository userDetailsRepository, TransactionsService transactionsService, AsyncManager asyncManager) {
+        this.userService = userService;
+        this.userDetailsRepository = userDetailsRepository;
+        this.transactionsService = transactionsService;
+        this.asyncManager = asyncManager;
+    }
 
     @Transactional
     public void makePayment(Integer payerPersonId, Integer receiverPersonId, Double amount, UUID idempotencyKey) {

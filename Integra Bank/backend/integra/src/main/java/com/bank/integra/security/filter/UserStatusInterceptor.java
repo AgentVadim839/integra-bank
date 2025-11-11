@@ -16,8 +16,11 @@ import org.springframework.web.servlet.HandlerInterceptor;
 // Чтобы при бане его выкинуло в рантайме. (грузит бд!!!)
 @Component
 public class UserStatusInterceptor implements HandlerInterceptor {
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public UserStatusInterceptor(UserService userService) {
+        this.userService = userService;
+    }
 
     private final SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
 

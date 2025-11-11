@@ -20,11 +20,13 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/user")
 public class DashREST {
-    @Autowired
-    private TransactionsService transactionsService;
+    private final TransactionsService transactionsService;
+    private final PdfRepository pdfRepository;
 
-    @Autowired
-    private PdfRepository pdfRepository;
+    public DashREST(TransactionsService transactionsService, PdfRepository pdfRepository) {
+        this.transactionsService = transactionsService;
+        this.pdfRepository = pdfRepository;
+    }
 
     @GetMapping("/transactions/{id}")
     public List<Map<String, Object>> showPrint(@PathVariable Integer id) {

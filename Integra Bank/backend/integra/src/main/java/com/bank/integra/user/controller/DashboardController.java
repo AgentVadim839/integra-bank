@@ -20,17 +20,17 @@ import java.util.Map;
 @RequestMapping("/user")
 @Controller
 public class DashboardController {
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+    private final TransactionsService transactionsService;
+    private final AsyncManager asyncManager;
+    private final CurrencyService currencyService;
 
-    @Autowired
-    private TransactionsService transactionsService;
-
-    @Autowired
-    private AsyncManager asyncManager;
-
-    @Autowired
-    private CurrencyService currencyService;
+    public DashboardController(UserService userService, TransactionsService transactionsService, AsyncManager asyncManager, CurrencyService currencyService) {
+        this.userService = userService;
+        this.transactionsService = transactionsService;
+        this.asyncManager = asyncManager;
+        this.currencyService = currencyService;
+    }
 
     @GetMapping("/home")
     public String showMainPage(Authentication authentication, Model model) {

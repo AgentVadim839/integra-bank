@@ -17,14 +17,15 @@ import java.util.UUID;
 @RequestMapping("/user")
 @Controller
 public class TransferController {
-    @Autowired
-    private PaymentService paymentService;
+    private final PaymentService paymentService;
+    private final UserService userService;
+    private final TransactionsService transactionsService;
 
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private TransactionsService transactionsService;
+    public TransferController(PaymentService paymentService, UserService userService, TransactionsService transactionsService) {
+        this.paymentService = paymentService;
+        this.userService = userService;
+        this.transactionsService = transactionsService;
+    }
 
     //TODO case 1, 0, 3 - дриндж, переведи в енумы с константными значениями.
     @PostMapping("/transfer")
