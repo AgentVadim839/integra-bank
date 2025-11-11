@@ -3,6 +3,7 @@ package com.bank.integra.async.service;
 import com.bank.integra.security.token.service.PasswordResetTokenService;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -16,6 +17,9 @@ public class EmailSenderService {
 
     @Autowired
     private PasswordResetTokenService resetTokenService;
+
+    @Value("${app.base-url}")
+    private String baseUrl;
 
     //TODO сделать универсальный метод отправки, например, сделать енум, в котором предусмотрится сообщение с паролем, баном, логином и тп
 
@@ -43,9 +47,6 @@ public class EmailSenderService {
 
     private String generateResetLink(String email) {
         String token = resetTokenService.createResetTokenForUser(email.trim());
-
-        //TODO URLA МЕНЯТЬ!
-        String baseUrl = "http://localhost:8080";
         String resetLink = baseUrl + "/user/reset-password?token=" + token;
         return resetLink;
     }
