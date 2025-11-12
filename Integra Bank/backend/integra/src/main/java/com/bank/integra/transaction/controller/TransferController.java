@@ -27,28 +27,18 @@ public class TransferController {
         this.transactionsService = transactionsService;
     }
 
-    //TODO case 1, 0, 3 - дриндж, переведи в енумы с константными значениями.
     @PostMapping("/transfer")
     public String makeTransfer(@RequestParam Integer senderId,
                                @RequestParam Integer recipientId,
                                @RequestParam Double amount, Model model, RedirectAttributes redirectAttributes) {
 
 
-        switch(checkBeforePayment(senderId,recipientId,amount)){
-            case 0:
-                redirectAttributes.addFlashAttribute("information", PaymentValidationResponse.INVALID_FORMAT.getDescription());
-                return "redirect:/user/home";
-            case 1:
-                redirectAttributes.addFlashAttribute("information", PaymentValidationResponse.NOT_ENOUGH_FUNDS.getDescription());
-                return "redirect:/user/home";
-            case 2:
-                redirectAttributes.addFlashAttribute("information", PaymentValidationResponse.ID_IS_SAME_AS_CURRENT.getDescription());
-                return "redirect:/user/home";
-            case 3:
-                redirectAttributes.addFlashAttribute("information", PaymentValidationResponse.USER_BANNED.getDescription());
-                return "redirect:/user/home";
-
+        PaymentValidationResponse paymentValidationResponse = checkBeforePayment(senderId,recipientId,amount);
+        if(!paymentValidationResponse.equals(PaymentValidationResponse.OK)) {
+            redirectAttributes.addFlashAttribute("information", paymentValidationResponse.getDescription());
+            return "redirect:/user/home";
         }
+
         TransferDTO transferDTO = new TransferDTO(senderId, recipientId, amount,
                     userService.getUserDetailsByUserId(senderId).getBalance(),
                     userService.getUserDetailsByUserId(recipientId).getFirstName(),
@@ -60,13 +50,12 @@ public class TransferController {
     }
 
     //TODO Для проверок лучше попробовать оформить АОП в аннотацию.
-
-    private int checkBeforePayment(Integer senderId, Integer recipientId, Double amount) {
-        if(PaymentService.checkIfUserNull(senderId, recipientId, userService)) return 0;
-        if(PaymentService.checkIfUserHasEnoughMoney(amount, userService.getUserDetailsByUserId(senderId))) return 1;
-        if(PaymentService.checkIfUserTheSameAsCurrent(senderId, recipientId)) return 2;
-        if(PaymentService.checkIfUserIsBanned(recipientId, userService)) return 3;
-        return 10; // КРИНЖ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    private PaymentValidationResponse checkBeforePayment(Integer senderId, Integer recipientId, Double amount) {
+        if(PaymentService.checkIfUserNull(senderId, recipientId, userService)) return PaymentValidationResponse.INVALID_FORMAT;
+        if(PaymentService.checkIfUserHasEnoughMoney(amount, userService.getUserDetailsByUserId(senderId))) return PaymentValidationResponse.NOT_ENOUGH_FUNDS;
+        if(PaymentService.checkIfUserTheSameAsCurrent(senderId, recipientId)) return PaymentValidationResponse.ID_IS_SAME_AS_CURRENT;
+        if(PaymentService.checkIfUserIsBanned(recipientId, userService)) return PaymentValidationResponse.USER_BANNED;
+        return PaymentValidationResponse.OK; 
     }
 
 
