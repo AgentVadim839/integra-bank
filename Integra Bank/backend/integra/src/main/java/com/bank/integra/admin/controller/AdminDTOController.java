@@ -25,13 +25,15 @@ public class AdminDTOController {
     private final RolesRepository rolesRepository;
     private final AdminPersistUserService persistUserService;
     private final UserService userService;
+    private final EmailValidator emailValidator;
 
     public AdminDTOController(UserService userService, AdminPersistUserService persistUserService,
-                              RolesRepository rolesRepository, UserRepository userRepository) {
+                              RolesRepository rolesRepository, UserRepository userRepository, EmailValidator emailValidator) {
         this.userRepository = userRepository;
         this.rolesRepository = rolesRepository;
         this.persistUserService = persistUserService;
         this.userService = userService;
+        this.emailValidator = emailValidator;
     }
 
     //TODO хуйня, валидацию тоже надо
@@ -40,7 +42,7 @@ public class AdminDTOController {
         if(bindingResult.hasErrors()) {
             return "redirect:/admin/home";
         }
-        EmailValidationResponse response = EmailValidator.checkEmail(adminDTO.getEmail(), adminDTO.getUserId(), userService);
+        EmailValidationResponse response = emailValidator.checkEmail(adminDTO.getEmail(), adminDTO.getUserId());
         if(response.isSuccess()) {
             persistUserService.saveUserFromForm(adminDTO, model);
             return "result";

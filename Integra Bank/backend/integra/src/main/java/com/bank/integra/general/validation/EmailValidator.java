@@ -11,13 +11,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class EmailValidator {
 
-    private static DisposableEmailChecker disposableEmailChecker;
+    private final DisposableEmailChecker disposableEmailChecker;
+    private final UserService userService;
 
-    public EmailValidator(DisposableEmailChecker disposableEmailChecker) {
-        EmailValidator.disposableEmailChecker = disposableEmailChecker;
+    public EmailValidator(DisposableEmailChecker disposableEmailChecker, UserService userService) {
+        this.disposableEmailChecker = disposableEmailChecker;
+        this.userService = userService;
     }
 
-    public static EmailValidationResponse checkEmail(String email, Integer userId, UserService userService) {
+    public EmailValidationResponse checkEmail(String email, Integer userId) {
         if(email == null || email.trim().isEmpty()) {
             return EmailValidationResponse.INVALID_FORMAT;
         }

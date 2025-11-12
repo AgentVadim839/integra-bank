@@ -24,12 +24,14 @@ public class DashboardController {
     private final TransactionsService transactionsService;
     private final AsyncManager asyncManager;
     private final CurrencyService currencyService;
+    private final EmailValidator emailValidator;
 
-    public DashboardController(UserService userService, TransactionsService transactionsService, AsyncManager asyncManager, CurrencyService currencyService) {
+    public DashboardController(UserService userService, TransactionsService transactionsService, AsyncManager asyncManager, CurrencyService currencyService, EmailValidator emailValidator) {
         this.userService = userService;
         this.transactionsService = transactionsService;
         this.asyncManager = asyncManager;
         this.currencyService = currencyService;
+        this.emailValidator = emailValidator;
     }
 
     @GetMapping("/home")
@@ -89,7 +91,7 @@ public class DashboardController {
         Integer userId = Integer.parseInt(authentication.getName());
         UserDetails user = userService.getUserDetailsByUserId(userId);
         String email = user.getEmail();
-        EmailValidationResponse response = EmailValidator.checkEmail(email, userId, userService);
+        EmailValidationResponse response = emailValidator.checkEmail(email, userId);
         if(response.isSuccess() || response == EmailValidationResponse.EMAIL_IS_SAME_AS_CURRENT) {
             asyncManager.runEmailSendTask(email);
             redirectAttributes.addFlashAttribute("information", "A confirmation email has been sent to your inbox.");
@@ -102,7 +104,7 @@ public class DashboardController {
     @PostMapping("/change-email")
     public String changeEmail(@RequestParam String newEmail, Authentication authentication, RedirectAttributes redirectAttributes) {
         Integer userId = Integer.parseInt(authentication.getName());
-        EmailValidationResponse response = EmailValidator.checkEmail(newEmail, userId, userService);
+        EmailValidationResponse response = emailValidator.checkEmail(newEmail, userId);
         if(response.isSuccess()) {
             UserDetails user = userService.getUserDetailsByUserId(userId);
             user.setEmail(newEmail);

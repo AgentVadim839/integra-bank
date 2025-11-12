@@ -24,12 +24,14 @@ public class AdminUsersController {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final AdminUpdateUserService adminUpdateUserService;
+    private final EmailValidator emailValidator;
 
     public AdminUsersController(UserService userService, PasswordEncoder passwordEncoder,
-                                AdminUpdateUserService adminUpdateUserService) {
+                                AdminUpdateUserService adminUpdateUserService, EmailValidator emailValidator) {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
         this.adminUpdateUserService = adminUpdateUserService;
+        this.emailValidator = emailValidator;
     }
 
     @GetMapping("")
@@ -104,7 +106,7 @@ public class AdminUsersController {
             redirectAttributes.addFlashAttribute("error", "Validation failed");
             return "redirect:/admin/users";
         }
-        EmailValidationResponse response = EmailValidator.checkEmail(adminDTO.getEmail(), adminDTO.getUserId(), userService);
+        EmailValidationResponse response = emailValidator.checkEmail(adminDTO.getEmail(), adminDTO.getUserId());
         if(response.isSuccess() || response.getDescription().equals(EmailValidationResponse.EMAIL_IS_SAME_AS_CURRENT.getDescription())) {
             adminUpdateUserService.updateUserFromForm(id, adminDTO, bindingResult, redirectAttributes);
             redirectAttributes.addFlashAttribute("information", "User was edited successfully.");
