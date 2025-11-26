@@ -13,6 +13,12 @@ public class UserDetails {
     @Column(name = "user_id")
     private Integer userId;
 
+    // TODO трай кетч с ретраем (старая версия - обновите)
+    @Version
+    @Column(name = "version")
+    private Long version;
+
+    // TODO меняй дабл на Big_Decimal))) ВЕЗДЕ)))
     @Column(name = "balance")
     private Double balance;
 
@@ -48,6 +54,15 @@ public class UserDetails {
     }
 
     // Getters and setters
+
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
+    }
 
     public List<Transaction> getSentTransactions() {
         return sentTransactions;
