@@ -2,6 +2,7 @@ package com.bank.integra.admin.service;
 
 import com.bank.integra.admin.repository.AdminRepository;
 import com.bank.integra.admin.model.Admin;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class AdminUserDetailsService implements UserDetailsService {
     private final AdminRepository adminRepository;
 
@@ -40,7 +42,8 @@ public class AdminUserDetailsService implements UserDetailsService {
         if (!authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
             throw new UsernameNotFoundException("User with id " + id + " is not an ADMIN");
         }
-        System.out.println("User: {"+id+"} has roles: {"+authorities+"}");
+        String logMessage = "User: {"+id+"} has roles: {"+authorities+"}";
+        log.info(logMessage);
         return new org.springframework.security.core.userdetails.User(
                 String.valueOf(id),
                 password,

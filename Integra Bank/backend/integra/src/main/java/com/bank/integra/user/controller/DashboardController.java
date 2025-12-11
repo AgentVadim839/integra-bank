@@ -14,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -43,9 +44,8 @@ public class DashboardController {
 
         //For fun
         String displayedUserBalance;
-        double userBalance = userDetails.getBalance();
-        double zazillion = 1_000_000_000_000_000.0;
-        if(userBalance >= zazillion) {
+        BigDecimal userBalance = userDetails.getBalance();
+        if(userBalance.compareTo(new BigDecimal(1_000_000_000_000_000.0)) >= 0) {
             String numZaz = userBalance + "";
             displayedUserBalance = numZaz.charAt(0) + " ZAZILLION DOLLAS 🤑🤑";
         } else {

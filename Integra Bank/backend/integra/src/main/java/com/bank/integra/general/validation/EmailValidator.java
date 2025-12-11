@@ -7,7 +7,6 @@ import com.bank.integra.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-// TODO лучше оформить в аспект
 @Component
 public class EmailValidator {
 

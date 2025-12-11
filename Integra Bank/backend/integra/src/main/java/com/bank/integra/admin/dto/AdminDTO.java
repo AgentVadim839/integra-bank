@@ -3,6 +3,8 @@ package com.bank.integra.admin.dto;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 public class AdminDTO {
     @NotNull(message = "User ID cannot be null")
@@ -15,7 +17,7 @@ public class AdminDTO {
 
     @NotNull(message = "Balance cannot be null")
     @DecimalMin(value = "0.0", message = "Balance must be at least 0.0")
-    private Double balance;
+    private BigDecimal balance;
 
     @NotBlank(message = "First name cannot be blank")
     @Size(max = 255, message = "First name must be less than 255 characters")

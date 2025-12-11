@@ -2,20 +2,20 @@ package com.bank.integra.transaction.dto;
 
 import lombok.Data;
 
-// TODO: Рассмотреть добавление валидации через аннотации, например:
-// @NotNull, @Min(1), @DecimalMin("0.01") над полями и использование @Valid в контроллере
-// Это упростит проверку входных данных и улучшит читаемость
+import java.math.BigDecimal;
+
+// TODO Validation for fields
 
 @Data
 public class TransferDTO {
     private Integer senderId;
     private Integer recipientId;
-    private Double amount;
-    private Double currentBalance;
+    private BigDecimal amount;
+    private BigDecimal currentBalance;
     private String recipientName;
     private String recipientLastName;
 
-    public TransferDTO(Integer senderId, Integer recipientId, Double amount, Double currentBalance, String recipientName, String recipientLastName) {
+    public TransferDTO(Integer senderId, Integer recipientId, BigDecimal amount, BigDecimal currentBalance, String recipientName, String recipientLastName) {
         this.senderId = senderId;
         this.recipientId = recipientId;
         this.amount = amount;

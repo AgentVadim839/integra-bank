@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-//TODO Обрати внимание, как филигранно можно обработать странички-ашибки
 @Component
 public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
     private static final String DISABLED_USER_REDIRECT_URL = "/user/login?banned";

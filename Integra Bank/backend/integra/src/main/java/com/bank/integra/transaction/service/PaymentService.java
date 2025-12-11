@@ -4,17 +4,21 @@ import com.bank.integra.user.repository.UserDetailsRepository;
 import com.bank.integra.user.model.UserDetails;
 import com.bank.integra.async.AsyncManager;
 import com.bank.integra.user.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
-//TODO Каждый sout - громкий пук, который отдаляет от логгера, не меняем!!
-//TODO Перевести всю логику валидации в отдельный класс (для контроллера тоже) и слать енумы в виде ответа, как у емаил валидатор
 @Service
+@Slf4j
 public class PaymentService {
     private final UserService userService;
     private final UserDetailsRepository userDetailsRepository;
@@ -29,7 +33,12 @@ public class PaymentService {
     }
 
     @Transactional
-    public void makePayment(Integer payerPersonId, Integer receiverPersonId, Double amount, UUID idempotencyKey) {
+    @Retryable(
+            retryFor = { ObjectOptimisticLockingFailureException.class },
+            maxAttempts = 3,
+            backoff = @Backoff(delay = 50)
+    )
+    public void makePayment(Integer payerPersonId, Integer receiverPersonId, BigDecimal amount, UUID idempotencyKey) {
         if (checkIfUserTheSameAsCurrent(payerPersonId, receiverPersonId)) return;
         if (checkIfUserNull(payerPersonId, receiverPersonId, userService)) return;
         if (checkIfUserIsBanned(receiverPersonId, userService)) return;
@@ -39,8 +48,8 @@ public class PaymentService {
             if (checkIfUserHasEnoughMoney(amount, payerUserDetails)) {
                 return;
             }
-            payerUserDetails.setBalance(payerUserDetails.getBalance() - amount);
-            receiverUserDetails.setBalance(receiverUserDetails.getBalance() + amount);
+            payerUserDetails.setBalance(payerUserDetails.getBalance().subtract(amount));
+            receiverUserDetails.setBalance(receiverUserDetails.getBalance().add(amount));
             userDetailsRepository.save(payerUserDetails);
             userDetailsRepository.save(receiverUserDetails);
             if(transactionsService.createAndSave(payerPersonId, receiverPersonId, amount, "", idempotencyKey) == null) {
@@ -55,13 +64,12 @@ public class PaymentService {
                 }
             });
         } else {
-            System.out.println("womp womp");
+            log.error("Payment operation wasn't successful.");
         }
     }
 
-    //TODO Желательно убрать. У тебя аспект так-то есть.
-    public static boolean checkIfUserHasEnoughMoney(Double amount, UserDetails payerUserDetails) {
-        if (payerUserDetails.getBalance() < amount) {
+    public static boolean checkIfUserHasEnoughMoney(BigDecimal amount, UserDetails payerUserDetails) {
+        if (payerUserDetails.getBalance().compareTo(amount) < 0) {
             return true;
         }
         return false;
@@ -77,7 +85,7 @@ public class PaymentService {
     public static boolean checkIfFormatCorrect(String receiverPersonId, String amount) {
         try {
             Integer.parseInt(receiverPersonId);
-            Double.parseDouble(amount);
+            new BigDecimal(amount);
         } catch (Exception e) {
             return false;
         }

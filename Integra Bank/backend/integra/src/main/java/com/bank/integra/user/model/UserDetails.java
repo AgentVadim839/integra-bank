@@ -3,6 +3,7 @@ package com.bank.integra.user.model;
 import com.bank.integra.transaction.model.Transaction;
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
@@ -13,8 +14,12 @@ public class UserDetails {
     @Column(name = "user_id")
     private Integer userId;
 
+    @Version
+    @Column(name = "version")
+    private Long version;
+
     @Column(name = "balance")
-    private Double balance;
+    private BigDecimal balance;
 
     @Column(name = "first_name")
     private String firstName;
@@ -34,7 +39,7 @@ public class UserDetails {
     @OneToMany(mappedBy = "recipient")
     private List<Transaction> receivedTransactions;
 
-    public UserDetails(Integer userId, Double balance, String firstName, String lastName, String transactionHistory, String email) {
+    public UserDetails(Integer userId, BigDecimal balance, String firstName, String lastName, String transactionHistory, String email) {
         this.userId = userId;
         this.balance = balance;
         this.firstName = firstName;
@@ -48,6 +53,23 @@ public class UserDetails {
     }
 
     // Getters and setters
+
+
+    public BigDecimal getBalance() {
+        return balance;
+    }
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
+    }
 
     public List<Transaction> getSentTransactions() {
         return sentTransactions;
@@ -73,13 +95,6 @@ public class UserDetails {
         this.userId = userId;
     }
 
-    public Double getBalance() {
-        return balance;
-    }
-
-    public void setBalance(Double balance) {
-        this.balance = balance;
-    }
 
     public String getFirstName() {
         return firstName;

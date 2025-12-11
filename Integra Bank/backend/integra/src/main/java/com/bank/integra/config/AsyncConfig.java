@@ -10,7 +10,7 @@ import java.util.concurrent.Executor;
 @EnableAsync
 @Configuration
 public class AsyncConfig {
-    // Тут включено 5 потоков. Если будет метать калом и слишком долго пердеть без квитанций, тогда клад сдесь
+    // 5 cores are dedicated. If receipts generation takes too long or makes lots of errors - there might be the core problem.
     @Bean(name = "pdfGenerationExecutor")
     public Executor taskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();

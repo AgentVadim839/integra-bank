@@ -36,7 +36,7 @@ public class AdminDTOController {
         this.emailValidator = emailValidator;
     }
 
-    //TODO хуйня, валидацию тоже надо
+    //TODO Add Validation
     @PostMapping("/save-user")
     public String processForm(@Valid @ModelAttribute AdminDTO adminDTO, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
         if(bindingResult.hasErrors()) {

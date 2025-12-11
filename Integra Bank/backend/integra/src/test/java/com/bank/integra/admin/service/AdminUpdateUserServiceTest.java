@@ -13,6 +13,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.math.BigDecimal;
+
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -44,12 +46,12 @@ public class AdminUpdateUserServiceTest {
         adminDTO.setLastName("Updated Doe");
         adminDTO.setEmail("updated.john@example.com");
         adminDTO.setPassword("newPassword");
-        adminDTO.setBalance(100.0);
+        adminDTO.setBalance(new BigDecimal(150));
 
         User existingUser = new User(userId, "oldPassword", true);
         UserDetails existingUserDetails = new UserDetails();
         existingUserDetails.setUserId(userId);
-        existingUserDetails.setBalance(50.0);
+        existingUserDetails.setBalance(new BigDecimal(50.0));
         existingUser.setUserDetails(existingUserDetails);
 
         when(userService.getUserById(userId)).thenReturn(existingUser);
@@ -86,7 +88,7 @@ public class AdminUpdateUserServiceTest {
         User existingUser = new User(userId, "oldPassword", true);
         UserDetails existingUserDetails = new UserDetails();
         existingUserDetails.setUserId(userId);
-        existingUserDetails.setBalance(50.0);
+        existingUserDetails.setBalance(new BigDecimal(50.0));
         existingUser.setUserDetails(existingUserDetails);
 
         when(userService.getUserById(userId)).thenReturn(existingUser);

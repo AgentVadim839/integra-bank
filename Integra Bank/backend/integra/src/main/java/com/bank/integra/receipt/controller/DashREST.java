@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-//TODO сделатьб кнопачки сос качиванием пдфки (если её нема - пересоздать), туда заходим по айди, но только если это запрос от пользователя получателя/атправителя, остальным - бан
+// TODO Code to implement the functionality of creating download buttons for PDF files (if they do not exist), downloading them from a specific ID if it exists, but only allowing access to the file if the request is from the sender or recipient. For other users, block access.
 @RestController
 @RequestMapping("/user")
 public class DashREST {

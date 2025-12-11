@@ -24,9 +24,7 @@ public class EmailSenderService {
 
 
 
-
-    //TODO сделать универсальный метод отправки, например, сделать енум, в котором предусмотрится сообщение с паролем, баном, логином и тп
-
+    //TODO Make universal sending template, for example, enum with passwords, bans, logins, etc. (PaymentValidationResponse for reference)
     /**
      *
      * @Async - метод работает асинхронно. Достаточно просто запроса с контроллера, как задача отправляется в пул и исоплнится, без лишних блоков.

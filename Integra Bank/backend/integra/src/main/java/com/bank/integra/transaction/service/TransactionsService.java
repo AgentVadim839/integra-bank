@@ -8,10 +8,11 @@ import com.bank.integra.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
 
-//TODO Написать тесты для транзекшнс хесторе
+//TODO Make tests for transactions history
 @Service
 public class TransactionsService {
     private final TransactionsRepository transactionRepository;
@@ -31,7 +32,7 @@ public class TransactionsService {
         return transactionRepository.save(transaction);
     }
 
-    public Transaction createTransaction(Integer senderId, Integer recipientId, Double balance, String description, UUID idempotencyKey) {
+    public Transaction createTransaction(Integer senderId, Integer recipientId, BigDecimal balance, String description, UUID idempotencyKey) {
         Transaction transaction = new Transaction();
         transaction.setSender(userService.getUserDetailsByUserId(senderId));
         transaction.setRecipient(userService.getUserDetailsByUserId(recipientId));
@@ -42,7 +43,7 @@ public class TransactionsService {
         return transaction;
     }
 
-    public Transaction createAndSave(Integer senderId, Integer recipientId, Double balance, String description, UUID idempotencyKey) {
+    public Transaction createAndSave(Integer senderId, Integer recipientId, BigDecimal balance, String description, UUID idempotencyKey) {
         Transaction transaction = createTransaction(senderId, recipientId, balance, description, idempotencyKey);
         return saveTransaction(transaction);
     }

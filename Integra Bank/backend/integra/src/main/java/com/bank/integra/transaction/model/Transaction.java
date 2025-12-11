@@ -4,6 +4,7 @@ import com.bank.integra.user.model.UserDetails;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -17,7 +18,7 @@ public class Transaction implements Comparable<Transaction> {
     private Integer id;
 
     @Column(name = "amount")
-    private Double balance;
+    private BigDecimal balance;
 
     @Column(name = "timestamp")
     private LocalDateTime eventTimeStamp;
