@@ -68,7 +68,6 @@ public class PaymentService {
         }
     }
 
-    //TODO Желательно убрать. У тебя аспект так-то есть.
     public static boolean checkIfUserHasEnoughMoney(BigDecimal amount, UserDetails payerUserDetails) {
         if (payerUserDetails.getBalance().compareTo(amount) < 0) {
             return true;
