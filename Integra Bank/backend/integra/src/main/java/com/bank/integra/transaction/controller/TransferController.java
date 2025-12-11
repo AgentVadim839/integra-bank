@@ -6,6 +6,7 @@ import com.bank.integra.transaction.service.TransactionsService;
 import com.bank.integra.transaction.validation.PaymentValidation;
 import com.bank.integra.transaction.validation.PaymentValidationResponseDTO;
 import com.bank.integra.user.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -19,6 +20,7 @@ import java.util.UUID;
 //TODO Сделать отображение кнопачки скачать пдф транзакции
 @RequestMapping("/user")
 @Controller
+@Slf4j
 public class TransferController {
     private final PaymentService paymentService;
     private final UserService userService;
@@ -70,7 +72,7 @@ public class TransferController {
             redirectAttributes.addFlashAttribute("information", "The system is overloaded. Please, try again.");
         } catch(RuntimeException e) {
             redirectAttributes.addFlashAttribute("information", "Transaction error.");
-            System.out.println("Duplicate of transaction.");
+            log.error("Controller confirmTransfer wasn't successful.");
         }
 
         return "redirect:/user/home";

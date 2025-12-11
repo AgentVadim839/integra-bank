@@ -3,6 +3,7 @@ package com.bank.integra.user.service;
 import com.bank.integra.admin.service.AdminUserDetailsService;
 import com.bank.integra.user.model.User;
 import com.bank.integra.user.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 /**
  * Этот класс распознаёт юзеров по их ролям. То есть если роль юзера: "ROLE_EMPLOYEE", тогда пускаем, иначе вам на другой логин. (Так же с {@link AdminUserDetailsService})
  */
+@Slf4j
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
     //TODO А че не сервис?
@@ -51,7 +53,8 @@ public class CustomUserDetailsService implements UserDetailsService {
         if (!authorities.contains(new SimpleGrantedAuthority("ROLE_EMPLOYEE"))) {
             throw new UsernameNotFoundException("User with id " + id + " is not an EMPLOYEE");
         }
-        System.out.println("User: {" + id + "} has roles: {" + authorities + "}");
+        String logMessage = "User: {"+id+"} has roles: {"+authorities+"}";
+        log.info(logMessage);
         return new org.springframework.security.core.userdetails.User(
                 String.valueOf(id),
                 password,

@@ -8,6 +8,7 @@ import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import java.util.Optional;
 
 //TODO уже хренотень: ачо будет если не сгенерит квитанцию????? АЧО АКАК?? М???
 @Service
+@Slf4j
 public class PdfGenerationService {
     private final TransactionsService transactionsService;
     private final PdfRepository pdfRepository;
@@ -30,7 +32,7 @@ public class PdfGenerationService {
 
     @Async("pdfGenerationExecutor")
     public void generateReceiptAsync(String transactionId) {
-        System.out.println("Начинаем *:･ﾟ✧*:･ﾟ✧асинхронную*:･ﾟ✧*:･ﾟ✧ генерацию пдф");
+        log.info("Starting async pdf generation task...");
         try (InputStream templateStream = getClass().getResourceAsStream("/pdf/cvfg.pdf")) {
             if (templateStream == null) {
                 throw new RuntimeException("Template pdf not found in classpath");
@@ -96,11 +98,10 @@ public class PdfGenerationService {
             PdfReceipt pdfReceipt = new PdfReceipt(transactionId, transaction.getEventTimeStamp(), pdfBytes);
             pdfRepository.save(pdfReceipt);
 
-            System.out.println("Сахраніл)) пдф))");
+            log.info("The pdf file was saved successfully.");
 
         } catch (Exception p) {
-            System.out.println("хрен его знает, что с тем пдф:");
-            p.printStackTrace();
+            log.error("Pdf generation operation wasn't successful.");
         }
     }
 }

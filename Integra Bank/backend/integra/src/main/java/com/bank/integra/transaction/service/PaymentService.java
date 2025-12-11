@@ -4,6 +4,7 @@ import com.bank.integra.user.repository.UserDetailsRepository;
 import com.bank.integra.user.model.UserDetails;
 import com.bank.integra.async.AsyncManager;
 import com.bank.integra.user.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.retry.annotation.Backoff;
@@ -19,6 +20,7 @@ import java.util.UUID;
 //TODO Каждый sout - громкий пук, который отдаляет от логгера, не меняем!!
 //TODO Перевести всю логику валидации в отдельный класс (для контроллера тоже) и слать енумы в виде ответа, как у емаил валидатор
 @Service
+@Slf4j
 public class PaymentService {
     private final UserService userService;
     private final UserDetailsRepository userDetailsRepository;
@@ -64,7 +66,7 @@ public class PaymentService {
                 }
             });
         } else {
-            System.out.println("womp womp");
+            log.error("Payment operation wasn't successful.");
         }
     }
 

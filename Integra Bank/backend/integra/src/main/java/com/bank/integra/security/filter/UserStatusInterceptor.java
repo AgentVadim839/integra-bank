@@ -1,5 +1,6 @@
 package com.bank.integra.security.filter;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import com.bank.integra.user.model.User;
 import com.bank.integra.user.service.UserService;
@@ -15,6 +16,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 // Определяет, заблокирован ли юзер/существует ли он в бд каждый запрос
 // Чтобы при бане его выкинуло в рантайме. (грузит бд!!!)
 @Component
+@Slf4j
 public class UserStatusInterceptor implements HandlerInterceptor {
     private final UserService userService;
 
@@ -41,8 +43,8 @@ public class UserStatusInterceptor implements HandlerInterceptor {
                     // Используем секурити юзер детайлс, тк там данные нужного здесь типа (ID)
                     userId = Integer.parseInt(((UserDetails) principal).getUsername());
                 } catch (NumberFormatException e) {
-                    System.out.println("Authenticated user ID is not a number: " + ((UserDetails) principal).getUsername());
-                    // Можно вылогинить или просто пропустить эту проверку для данного пользователя
+                    String logMessage = "Authenticated user ID is not a number: " + ((UserDetails) principal).getUsername();
+                    log.error(logMessage);
                     return true;
                 }
             }

@@ -12,6 +12,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Service
+
 public class AdminUpdateUserService {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
@@ -23,7 +24,6 @@ public class AdminUpdateUserService {
 
     @Transactional
     public void updateUserFromForm(Integer id, AdminDTO adminDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
-        System.out.println("oleg:" + adminDTO.getPassword() + "|");
         User user = userService.getUserById(adminDTO.getUserId());
         if(!adminDTO.getPassword().isBlank()) {
             user.setPassword(passwordEncoder.encode(adminDTO.getPassword()));

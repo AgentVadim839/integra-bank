@@ -7,6 +7,7 @@ import com.bank.integra.admin.service.AdminUpdateUserService;
 import com.bank.integra.user.service.UserService;
 import com.bank.integra.general.validation.EmailValidator;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -20,6 +21,7 @@ import java.util.List;
 //TODO Сделать норм инфо-поле, как у юзера с транзакциями.
 @Controller
 @RequestMapping("/admin/users")
+@Slf4j
 public class AdminUsersController {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
@@ -37,10 +39,12 @@ public class AdminUsersController {
     @GetMapping("")
     public String showAllUsers(Model model) {
         List<User> users = userService.getAllUsers();
-        System.out.println("Количество пользователей, полученных из сервиса: " + (users != null ? users.size() : "null"));
+        String logMessage = "Count of users app got from service is: " + (users != null ? users.size() : "null");
+        log.info(logMessage);
         if (users != null) {
             for (User user : users) {
-                System.out.println("User ID: " + user.getId() + ", First Name: " + (user.getUserDetails() != null ? user.getUserDetails().getFirstName() : "No Details"));
+                String logMessageId = "User ID: " + user.getId() + ", First Name: " + (user.getUserDetails() != null ? user.getUserDetails().getFirstName() : "No Details");
+                log.info(logMessageId);
             }
         }
         model.addAttribute("users", users);
