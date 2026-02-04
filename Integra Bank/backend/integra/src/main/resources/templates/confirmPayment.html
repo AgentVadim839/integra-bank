@@ -28,7 +28,7 @@
     </div>
 
     <form th:action="@{/user/confirm-transfer}" method="post" class="flex flex-col space-y-3" id="transferForm">
-        <input type="hidden" name="idempotencyKey" id="idempotencyKey"/>
+        <input type="hidden" name="idempotencyKey" id="${idempotencyKey}"/>
         <input type="hidden" name="senderId" th:value="${transferData.senderId}"/>
         <input type="hidden" name="recipientId" th:value="${transferData.recipientId}"/>
         <input type="hidden" name="amount" th:value="${transferData.amount}"/>
@@ -50,17 +50,20 @@
 </div>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const uuid = crypto.randomUUID();
-        document.getElementById("idempotencyKey").value = uuid;
-
         const form = document.getElementById("transferForm");
         const confirmButton = document.getElementById("confirmButton");
 
-        form.addEventListener("submit", function () {
-            confirmButton.disabled = true; // Disable the button
-            confirmButton.innerText = "Processing..."; // Change button text
-            confirmButton.style.backgroundColor = "#6C895F"; // Change background color to indicate loading
-        });
+        if (form) {
+            form.addEventListener("submit", function () {
+                // Маленькая защита от дурака на уровне UI
+                if (confirmButton.disabled) return;
+
+                confirmButton.disabled = true;
+                confirmButton.innerText = "Processing...";
+                confirmButton.style.backgroundColor = "#6C895F";
+                confirmButton.style.cursor = "not-allowed"; 
+            });
+        }
     });
 </script>
 

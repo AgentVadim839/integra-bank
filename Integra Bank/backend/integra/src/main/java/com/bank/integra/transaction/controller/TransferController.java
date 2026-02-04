@@ -53,6 +53,7 @@ public class TransferController {
 
         model.addAttribute("transferData", transferDTO);
         model.addAttribute("transactionOn", "true");
+        model.addAttribute("idempotencyKey", UUID.randomUUID());
         return "confirmPayment";
     }
 
@@ -62,12 +63,7 @@ public class TransferController {
     public String confirmTransfer(Authentication authentication,
                                   @RequestParam Integer recipientId,
                                   @RequestParam BigDecimal amount,
-                                  @RequestParam(required = false) UUID idempotencyKey, RedirectAttributes redirectAttributes) {
-
-        if (idempotencyKey == null) {
-            idempotencyKey = UUID.randomUUID();
-        }
-
+                                  @RequestParam UUID idempotencyKey, RedirectAttributes redirectAttributes) {
         try {
             Integer senderId = Integer.parseInt(authentication.getName());
             paymentService.makePayment(senderId, recipientId, amount, idempotencyKey);
