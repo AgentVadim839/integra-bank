@@ -62,7 +62,7 @@ public class TransferController {
     public String confirmTransfer(Authentication authentication,
                                   @RequestParam Integer recipientId,
                                   @RequestParam BigDecimal amount,
-                                  @RequestParam UUID idempotencyKey, RedirectAttributes redirectAttributes) {
+                                  @RequestParam(required = false) UUID idempotencyKey, RedirectAttributes redirectAttributes) {
 
         if (idempotencyKey == null) {
             idempotencyKey = UUID.randomUUID();
