@@ -12,6 +12,16 @@
 
 ---
 
+### Quick Access (Credentials)
+http://152.53.83.62:8090/
+
+| Role | Login (ID) | Password |
+|------|------------|----------|
+| USER | `1005` | `fun123` | 
+| USER | `1007` | `fun123` |
+| USER | `1008` | `fun123` |
+| BANNED | `1009` | `fun123` |
+
 ## Main Features
 
 ### 1. Concurrency & Data Integrity
