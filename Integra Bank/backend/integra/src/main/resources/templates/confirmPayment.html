@@ -28,7 +28,7 @@
     </div>
 
     <form th:action="@{/user/confirm-transfer}" method="post" class="flex flex-col space-y-3" id="transferForm">
-        <input type="hidden" name="idempotencyKey" id="${idempotencyKey}"/>
+        <input type="hidden" name="idempotencyKey" th:value="${idempotencyKey}"/>
         <input type="hidden" name="senderId" th:value="${transferData.senderId}"/>
         <input type="hidden" name="recipientId" th:value="${transferData.recipientId}"/>
         <input type="hidden" name="amount" th:value="${transferData.amount}"/>
@@ -61,7 +61,7 @@
                 confirmButton.disabled = true;
                 confirmButton.innerText = "Processing...";
                 confirmButton.style.backgroundColor = "#6C895F";
-                confirmButton.style.cursor = "not-allowed"; 
+                confirmButton.style.cursor = "not-allowed";
             });
         }
     });
