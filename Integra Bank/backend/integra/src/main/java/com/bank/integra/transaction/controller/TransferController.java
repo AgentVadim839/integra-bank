@@ -63,6 +63,11 @@ public class TransferController {
                                   @RequestParam Integer recipientId,
                                   @RequestParam BigDecimal amount,
                                   @RequestParam UUID idempotencyKey, RedirectAttributes redirectAttributes) {
+
+        if (idempotencyKey == null) {
+            idempotencyKey = UUID.randomUUID();
+        }
+
         try {
             Integer senderId = Integer.parseInt(authentication.getName());
             paymentService.makePayment(senderId, recipientId, amount, idempotencyKey);
