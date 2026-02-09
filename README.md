@@ -22,6 +22,8 @@ http://152.53.83.62:8090/
 | USER | `1008` | `fun123` |
 | BANNED | `1009` | `fun123` |
 
+Authentication is simplified for demo purposes. In production this would be HTTPS, JWT/OAuth2, password hashing, device/session tracking.
+
 ## Main Features
 
 ### 1. Concurrency & Data Integrity
