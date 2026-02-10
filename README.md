@@ -13,7 +13,7 @@
 ---
 
 ### Quick Access (Credentials)
-http://152.53.83.62:8090/
+https://integrabank.duckdns.org:8090/
 
 | Role | Login (ID) | Password |
 |------|------------|----------|
